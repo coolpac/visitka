@@ -95,7 +95,7 @@ img.lazy {
 .main-container {
     position: relative;
     width: 440px;
-    height: 5664px; /* 5276 + 348 + 40 */
+    height: 5660px; /* 5280 (section-7 top) + 380 (section-7 height) = 5660px */
 }
 
 /* --- HERO SECTION --- */
@@ -1024,8 +1024,8 @@ img.lazy {
     left: 0;
     top: 4120px; /* 2430 + 1690 = 4120px */
     width: 440px;
-    height: 956px; /* Высота секции */
-    padding-bottom: 40px;
+    height: 1100px; /* Увеличено с 956px до 1100px для размещения всего контента (текст + 2 изображения ~268px каждое) */
+    padding-bottom: 60px; /* Отступ снизу */
     z-index: 10;
     overflow: visible; /* Разрешаем видимость элементов за границами */
 }
@@ -1122,10 +1122,10 @@ img.lazy {
 .project-section-7 {
     position: absolute;
     left: 0;
-    top: 5276px; /* 5076 + 200 = 5276px (увеличен отступ на 200px) */
+    top: 5280px; /* 4120 (section-6 top) + 1100 (section-6 height) + 60 (padding-bottom) = 5280px */
     width: 440px;
-    height: 348px; /* 78 (текст) + 66 (отступ) + 204 (баннер) = 348px */
-    padding-bottom: 40px;
+    height: 380px; /* 78 (content top) + 77 (текст) + 25 (отступ) + 204 (баннер) = 384px, округлено до 380px */
+    padding-bottom: 0; /* Убрано для устранения лишнего белого пространства */
     z-index: 20;
 }
 
@@ -1182,7 +1182,7 @@ img.lazy {
 .values-banner {
     position: relative;
     left: 0;
-    top: 66px; /* 144 - 78 = 66px от начала content */
+    top: 102px; /* 78 (content top) + 77 (текст) + 25 (отступ) = 180px от начала section, но относительно content это 102px */
     width: 440px;
     height: 204px; /* Увеличено с 164px до 204px для размещения футера с отступом */
     background: linear-gradient(135deg, #00558d 0%, #004470 100%);
@@ -1263,9 +1263,27 @@ img.lazy {
     text-transform: uppercase;
 }
 
+.values-footer-link {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: color 0.3s ease, opacity 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.values-footer-link:hover {
+    color: rgba(255, 255, 255, 1);
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.values-footer-link:active {
+    opacity: 0.8;
+}
+
 /* ===== RESPONSIVE VIEWPORT SCALING ===== */
 /* Pixel-perfect responsive design using transform: scale() method */
-/* Base design: 440px width × 5664px height */
+/* Base design: 440px width × 5660px height */
 /* Optimized for all devices with smooth transitions and performance improvements */
 
 /* Very small devices (320px and below) - minimum scale */
@@ -1277,7 +1295,7 @@ img.lazy {
     .main-wrapper {
         transform-origin: top left;
         transform: scale(calc(100vw / 440));
-        height: calc(5664px * (100vw / 440));
+        height: calc(5660px * (100vw / 440));
         box-shadow: none;
         max-width: none;
         will-change: transform;
@@ -1294,7 +1312,7 @@ img.lazy {
     .main-wrapper {
         transform-origin: top left;
         transform: scale(calc(100vw / 440));
-        height: calc(5664px * (100vw / 440));
+        height: calc(5660px * (100vw / 440));
         box-shadow: none;
         max-width: none;
         will-change: transform;
@@ -1311,7 +1329,7 @@ img.lazy {
     .main-wrapper {
         transform-origin: top left;
         transform: scale(calc(100vw / 440));
-        height: calc(5664px * (100vw / 440));
+        height: calc(5660px * (100vw / 440));
         box-shadow: none;
         max-width: none;
         will-change: transform;
@@ -1341,21 +1359,21 @@ img.lazy {
 /* Large tablets and small desktops (769px - 1199px) */
 @media (min-width: 769px) and (max-width: 1199px) {
     .main-wrapper {
-        margin: 10px auto;
+        margin: 10px auto 0 auto; /* Убран нижний отступ */
     }
 }
 
 /* Large screens - keep original design with margin */
 @media (min-width: 1200px) {
     .main-wrapper {
-        margin: 20px auto;
+        margin: 20px auto 0 auto; /* Убран нижний отступ для устранения белого пространства */
     }
 }
 
 /* Extra large screens - add more margin */
 @media (min-width: 1920px) {
     .main-wrapper {
-        margin: 40px auto;
+        margin: 40px auto 0 auto; /* Убран нижний отступ */
     }
 }
 
@@ -1363,8 +1381,8 @@ img.lazy {
 @media (max-width: 440px) and (orientation: landscape) {
     .main-wrapper {
         transform-origin: top left;
-        transform: scale(calc(100vh / 5664 * 1.5));
-        height: calc(5664px * (100vh / 5664 * 1.5));
+        transform: scale(calc(100vh / 5660 * 1.5));
+        height: calc(5660px * (100vh / 5660 * 1.5));
         transition: transform 0.3s ease-out;
     }
 }
