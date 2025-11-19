@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Анна Алексеевна Иващенко</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100;8..144,300;8..144,400;8..144,500;8..144,700;8..144,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="main-container">
+            <!-- Hero Image Section (Component 1) with Slider -->
+            <!-- y=107, h=277. Ends at 384. Rounded bottom corners. Z-index: 20 (above banner) -->
+            <div class="hero-image-container">
+                <div class="hero-slider">
+                    <div class="hero-slider__viewport">
+                        <div class="hero-slide is-active">
+                            <img src="images/hero-slide1.png" alt="Анна Иващенко" class="hero-image">
+                        </div>
+                        <div class="hero-slide">
+                            <img src="images/hero-slide2.png" alt="Анна Иващенко" class="hero-image">
+                        </div>
+                        <div class="hero-slide">
+                            <img src="images/hero-slide3.png" alt="Анна Иващенко" class="hero-image">
+                        </div>
+                        <div class="hero-slide">
+                            <img src="images/hero-slide4.png" alt="Анна Иващенко" class="hero-image">
+                        </div>
+                    </div>
+                    <div class="hero-slider__controls">
+                        <button class="hero-slider__button" data-action="prev">‹</button>
+                        <button class="hero-slider__button" data-action="next">›</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Banner Background (Rectangle 9) -->
+            <!-- y=340, h=118. Ends at 458. Z-index: 10 (behind hero bottom) -->
+            <div class="profile-banner-bg"></div>
+
+            <!-- Profile Picture (photo_2025-11-19 00.23.23 1) -->
+            <!-- y=340. Z-index: 30 (on top) -->
+            <div class="profile-picture">
+                <img src="images/profile.png" alt="Анна Иващенко">
+            </div>
+            
+            <!-- Profile Name (Text) -->
+            <!-- y=390. Z-index: 30 -->
+            <h1 class="profile-name">
+                <span class="name-line">Анна Алексеевна </span>
+                <span class="name-line">Иващенко</span>
+            </h1>
+            
+            <!-- Profile Email (Text) -->
+            <!-- y=437. Z-index: 30 -->
+            <div class="profile-email">
+                <span>anna.anna.ivaschenko@gmail.com</span>
+            </div>
+            
+            <!-- Message Icon (Image 3) -->
+            <!-- y=410. Z-index: 30 -->
+            <img src="images/message-icon.png" alt="Message" class="message-icon">
+            
+            <!-- Profile Status (Text) -->
+            <!-- y=472. Outside banner (below 458). Z-index: 20 -->
+            <p class="profile-status">Открыта к диалогу и сотрудничеству</p>
+
+            <!-- Divider Line (Rectangle 10) -->
+            <!-- y=494. Z-index: 20 -->
+            <div class="divider-line"></div>
+
+            <!-- Contact Button (Rectangle 11) -->
+            <!-- y=502. Z-index: 20 -->
+            <button class="contact-button">Связаться</button>
+
+            <!-- Professional Activity Section (Group) -->
+            <!-- y=548. Z-index: 10 -->
+            <div class="activity-banner-bg"></div>
+            <h2 class="activity-title">Профессиональная деятельность</h2>
+            <p class="activity-description">
+                Руководитель Федеральных проектов в сфере молодежной политики, медиа-менеджер
+            </p>
+            <p class="activity-telegram">
+                Веду телеграм-канал "Иващенко сообщает"
+            </p>
+            <div class="activity-overlay"></div>
+            <div class="activity-image">
+                <img src="images/activity.png" alt="Конференция">
+            </div>
+
+            <!-- Projects Section - продолжение страницы -->
+            
+            <!-- Section 1: Развитие сообществ -->
+            <div class="project-section project-section-1">
+                <div class="project-number project-number-1">1</div>
+                <h3 class="project-title-1">Развитие сообществ</h3>
+                <div class="project-text-1">
+                    <span>Развиваю </span><span class="text-highlight">молодежные</span><span> православные сообщества. </span><br>
+                    <span>На слушаниях Национального проекта "Молодежь и дети" </span><br>
+                    <span>в </span><span class="text-highlight">Государственной Думе</span><span> обратила внимание на необходимость поддерживать молодежные православные сообщества</span>
+                </div>
+                <div class="project-image-1">
+                    <img src="images/project1.png" alt="Развитие сообществ">
+                </div>
+                <div class="project-decoration-left"></div>
+            </div>
+
+            <!-- Section 2: Мироносицы 21 века -->
+            <div class="project-section project-section-2">
+                <div class="project-number project-number-2">2</div>
+                <h3 class="project-title-2">Мироносицы 21 века</h3>
+                <div class="project-text-2">
+                    <p>Проект-исследование</p>
+                    <p>о благочестивом образе жизни </p>
+                    <p>в истории и современной России </p>
+                </div>
+                <div class="project-image-2">
+                    <img src="images/project2.png" alt="Мироносицы 21 века">
+                </div>
+                <div class="project-decoration-right"></div>
+            </div>
+
+            <!-- Section 3: Выступаю спикером на темы -->
+            <div class="project-section project-section-3">
+                <div class="project-number project-number-3">3</div>
+                <h3 class="project-title-3">Выступаю спикером на темы</h3>
+
+                <section class="speaker-slider" aria-label="Темы выступлений">
+                    <div class="speaker-slider__viewport">
+                        <article class="speaker-slide is-active" data-slide-title="Традиционные духовно-нравственные ценности России">
+                            <img src="images/slide1.png" alt="Традиционные духовно-нравственные ценности России">
+                            <div class="speaker-slide__text">
+                                <p class="speaker-slide__title">Традиционные духовно-нравственные ценности России</p>
+                            </div>
+                        </article>
+                        <article class="speaker-slide" data-slide-title="Организация работы с молодежью">
+                            <img src="images/slide2.png" alt="Организация работы с молодежью">
+                            <div class="speaker-slide__text">
+                                <p class="speaker-slide__title">Организация работы с молодежью</p>
+                            </div>
+                        </article>
+                        <article class="speaker-slide" data-slide-title="Молодежная политика для молодого политика">
+                            <img src="images/slide3.png" alt="Молодежная политика для молодого политика">
+                            <div class="speaker-slide__text">
+                                <p class="speaker-slide__title">Молодежная политика для молодого политика</p>
+                            </div>
+                        </article>
+                        <article class="speaker-slide" data-slide-title="Медиа сопровождение проектов и компаний">
+                            <img src="images/slide4.png" alt="Медиа сопровождение проектов и компаний">
+                            <div class="speaker-slide__text">
+                                <p class="speaker-slide__title">Медиа сопровождение проектов и компаний</p>
+                            </div>
+                        </article>
+                    </div>
+                    </div>
+                    <div class="speaker-slider__controls">
+                        <button type="button" class="speaker-slider__button" data-action="prev" aria-label="Предыдущий слайд">‹</button>
+                        <button type="button" class="speaker-slider__button" data-action="next" aria-label="Следующий слайд">›</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Section 4: Опыт в молодежной политике -->
+            <div class="project-section project-section-4">
+                <div class="project-number project-number-4">4</div>
+                <h3 class="project-title-4">Опыт в молодежной политике</h3>
+                
+                <div class="experience-content">
+                    <div class="experience-text">
+                        <p>Заместитель руководителя дирекции по работе с детьми с ОВЗ и детьми-сиротами в ЦА "Движение Первых"</p>
+                        <p><strong>Руководитель Всероссийской акции «Благодарю»</strong></p>
+                        <ul>
+                            <li>1 млн детей</li>
+                            <li>89 регионов России</li>
+                            <li>40 млн в социальных сетях</li>
+                            <li>30 млн в СМИ</li>
+                        </ul>
+                        <p><strong>Организатор Всероссийской благотворительной акции «Ёлка желаний»</strong>, в которой исполнено более 100 тыс. желаний детей</p>
+                        <p><strong>Организатор благотворительных мероприятий</strong> на Государственном Совете РФ по молодежной политике, в Государственной Думе, в Совете Федерации, в Кремле, благодаря чему исполнено более 500 желаний детей</p>
+                        <p><strong>Медиаменеджер</strong> по информационному сопровождению деятельности промышленных и высокотехнологичных компаний</p>
+                    </div>
+                    
+                    <div class="experience-gallery">
+                        <div class="gallery-item gallery-item-1">
+                            <img src="images/experience1.png" alt="Опыт работы">
+                        </div>
+                        <div class="gallery-item gallery-item-2">
+                            <img src="images/experience2.png" alt="Опыт работы">
+                        </div>
+                        <div class="gallery-item gallery-item-3">
+                            <img src="images/experience3.png" alt="Опыт работы">
+                        </div>
+                        <div class="gallery-item gallery-item-4">
+                            <img src="images/experience4.png" alt="Опыт работы">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Общественная деятельность -->
+            <div class="project-section project-section-5">
+                <div class="project-number project-number-5">5</div>
+                <h3 class="project-title-5">Общественная деятельность</h3>
+                
+                <div class="public-activity-content">
+                    <div class="public-activity-text">
+                        <p>Выступаю за защиту жизни детей с первых дней. На форуме "Территория смыслов" задала Лидерам Фракций вопрос о выводе абортов из ОМС.</p>
+                        <div class="public-gallery-item public-gallery-item-1">
+                            <img src="images/activity1.png" alt="Общественная деятельность">
+                        </div>
+                        
+                        <p>На форуме "Сохраним жизнь" и "Отцы за жизнь" обратила внимание на необходимость просвещения молодежи о демографической ситуации в России, в том числе через проекты и форумы молодежной государственной политики</p>
+                        <div class="public-gallery-item public-gallery-item-2">
+                            <img src="images/activity2.png" alt="Общественная деятельность">
+                        </div>
+                        
+                        <p>Посещаю молебны о здравии воинов на СВО. Во время мобилизации работала пресс-секретарем Республиканского общественного движения помощи мобилизованным и их семьям «Ярдэм Янэшэ! Помощь рядом!»</p>
+                        <div class="public-gallery-item public-gallery-item-3">
+                            <img src="images/activity3.png" alt="Общественная деятельность">
+                        </div>
+                        
+                        <p>Член Экспертного совета Молодежного Парламента при Государственной Думе РФ</p>
+                        <p>Финалистка конкурса управленцев Лидеры России</p>
+                        <p>Участница Всероссийских молодёжных форумов «Территория Смыслов», «ШУМ», «Восток», «Иволга» и др 2017-2025 гг.</p>
+                        <div class="public-gallery-item public-gallery-item-4">
+                            <img src="images/activity4.png" alt="Общественная деятельность">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 6: Образование -->
+            <div class="project-section project-section-6">
+                <div class="project-number project-number-6">6</div>
+                <h3 class="project-title-6">Образование</h3>
+                
+                <div class="education-content">
+                    <div class="education-text">
+                        <p>В 2015 году окончила Самарский Государственный Технический университет по специальности «менеджмент», профиль "экономика и управление"</p>
+                        <p>Повышение квалификации по профилю "Руководитель проектов", "Ведущий телевизионного эфира", "Профилактика деструктивных явлений в молодежной среде"</p>
+                        <p>Окончила Мастерскую Новых Медиа, направление "Стратегические коммуникации", мастерская Романа Карманова (ПФКИ)</p>
+                        <p>Выпускница Школы Духовного Развития от центра "Фавор"</p>
+                    </div>
+                    
+                    <div class="education-gallery">
+                        <div class="education-gallery-item education-gallery-item-1">
+                            <img src="images/education1.png" alt="Образование">
+                        </div>
+                        <div class="education-gallery-item education-gallery-item-2">
+                            <img src="images/education2.png" alt="Образование">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 7: Мои ценности (Финальная секция) -->
+            <div class="project-section project-section-7">
+                <div class="project-number project-number-7">7</div>
+                <h3 class="project-title-7">Мои ценности</h3>
+                
+                <div class="values-content">
+                    <p class="values-text">Православие, молодежная политика, социальные проекты, путешествия, творчество, дружба, семья, Россия❤️‍🔥</p>
+                    <div class="values-banner">
+                        <p class="values-collaboration">Предложить сотрудничество</p>
+                        <div class="values-divider"></div>
+                        <button class="values-contact-button">Связаться</button>
+                        <p class="values-footer">САЙТ СОЗДАН<br>BY QUARDOBOT</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

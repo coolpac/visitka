@@ -1,0 +1,1171 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Цвета из Figma */
+    --blue-gradient-start: #94d4ff;
+    --blue-gradient-end: #549ccd;
+    --bg-white: #ffffff;
+}
+
+body {
+    font-family: 'Roboto Flex', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.main-wrapper {
+    width: 100%;
+    max-width: 440px;
+    background-color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.main-container {
+    position: relative;
+    width: 440px;
+    height: 5664px; /* 5276 + 348 + 40 */
+}
+
+/* --- HERO SECTION --- */
+/* Hero Image Container: x=0, y=0 (was 107), w=440, h=277 */
+.hero-image-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 440px;
+    height: 277px;
+    border-radius: 0 0 30px 30px;
+    overflow: hidden;
+    z-index: 20;
+    background-color: #fff;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Hero Slider */
+.hero-slider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-slider__viewport {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.hero-slide.is-active {
+    opacity: 1;
+    position: relative;
+}
+
+.hero-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.hero-slider__controls {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 30;
+}
+
+.hero-slider__button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.hero-slider__button:hover {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 1);
+}
+
+/* --- PROFILE SECTION --- */
+
+/* Profile Banner BG: x=0, y=233 (was 340) */
+.profile-banner-bg {
+    position: absolute;
+    left: 0;
+    top: 233px;
+    width: 440px;
+    height: 118px;
+    background: linear-gradient(to right, var(--blue-gradient-start), var(--blue-gradient-end));
+    border-radius: 0 0 10px 10px;
+    z-index: 10;
+}
+
+/* Profile Picture: x=22, y=233 (was 340) */
+.profile-picture {
+    position: absolute;
+    left: 22px;
+    top: 233px;
+    width: 123px;
+    height: 129px;
+    border-radius: 87px;
+    border: 2px solid white;
+    overflow: hidden;
+    z-index: 30;
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 155.84%;
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    top: -3.9%;
+    left: 0;
+}
+
+/* Profile Name: x=157, y=283 (was 390) */
+.profile-name {
+    position: absolute;
+    left: 157px;
+    top: 283px;
+    width: 224px;
+    margin: 0;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 23px;
+    color: white;
+    z-index: 30;
+}
+
+.name-line {
+    display: block;
+}
+
+/* Profile Email: x=157, y=330 (was 437) */
+.profile-email {
+    position: absolute;
+    left: 157px;
+    top: 330px;
+    width: 225px;
+    font-weight: 500;
+    font-size: 14px;
+    color: white;
+    z-index: 30;
+}
+
+/* Message Icon: x=404, y=303 (was 410) */
+.message-icon {
+    position: absolute;
+    left: 404px;
+    top: 303px;
+    width: 24px;
+    height: 24px;
+    z-index: 30;
+}
+
+/* Profile Status: x=66, y=365 (was 472) */
+.profile-status {
+    position: absolute;
+    left: 66px;
+    top: 365px;
+    width: 308px;
+    margin: 0;
+    font-weight: 500;
+    font-size: 18px;
+    text-align: center;
+    z-index: 20;
+    background: linear-gradient(to right, var(--blue-gradient-start), var(--blue-gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #549ccd;
+}
+
+/* Divider Line: x=0, y=387 (was 494) */
+.divider-line {
+    position: absolute;
+    left: 0;
+    top: 387px;
+    width: 440px;
+    height: 1px;
+    background-color: #94d4ff;
+    z-index: 20;
+}
+
+/* Contact Button: x=22, y=395 (was 502) */
+/* Button Text: x=182, y=510 -> relative to button: x=160 (182-22), y=115 (510-395) */
+.contact-button {
+    position: absolute;
+    left: 18px; /* Центрируем: (440-404)/2 = 18px */
+    top: 395px;
+    width: 404px;
+    height: 36px;
+    background: white;
+    border: 1px solid #549ccd;
+    border-radius: 10px;
+    font-family: 'Roboto Flex', sans-serif;
+    font-weight: 300;
+    font-size: 18px;
+    color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    padding: 0;
+}
+
+.contact-button::after {
+    content: "Связаться";
+    background: linear-gradient(to right, var(--blue-gradient-start), var(--blue-gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* --- ACTIVITY SECTION --- */
+
+/* Activity Banner BG: x=0, y=441 (was 548) */
+.activity-banner-bg {
+    position: absolute;
+    left: 0;
+    top: 441px;
+    width: 440px;
+    height: 133px;
+    background: linear-gradient(to right, var(--blue-gradient-start), var(--blue-gradient-end));
+    border-radius: 10px;
+    z-index: 10;
+}
+
+/* Activity Title: x=19, y=445 (was 552) */
+.activity-title {
+    position: absolute;
+    left: 19px;
+    top: 445px;
+    width: 373px;
+    margin: 0;
+    font-weight: 800;
+    font-size: 22px;
+    color: white;
+    z-index: 20;
+}
+
+/* Activity Description: x=19, y=472 (was 579) */
+.activity-description {
+    position: absolute;
+    left: 19px;
+    top: 472px;
+    width: 286px;
+    margin: 0;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.2;
+    color: white;
+    z-index: 20;
+}
+
+/* Activity Telegram: x=19, y=541 (was 648) */
+.activity-telegram {
+    position: absolute;
+    left: 19px;
+    top: 541px;
+    width: 250px;
+    margin: 0;
+    font-weight: 400;
+    font-size: 12px;
+    color: white;
+    z-index: 20;
+}
+
+/* Activity Overlay: x=0, y=539 (was 646) */
+.activity-overlay {
+    position: absolute;
+    left: 0;
+    top: 539px;
+    width: 440px;
+    height: 19px;
+    background-color: rgba(0, 135, 225, 0.5);
+    z-index: 15;
+}
+
+/* Activity Image: x=334, y=473 (was 580) */
+.activity-image {
+    position: absolute;
+    left: 334px;
+    top: 473px;
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    border: 1px solid white;
+    overflow: hidden;
+    z-index: 20;
+}
+
+.activity-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* --- PROJECTS SECTION --- */
+
+/* Section 1: Развитие сообществ */
+/* Activity section ends at 574px, projects start there */
+/* Number: x=0, y=22 (absolute: 574+22=596) */
+.project-section-1 {
+    position: absolute;
+    left: 0;
+    top: 574px;
+    width: 440px;
+}
+
+.project-number-1 {
+    position: absolute;
+    left: 0;
+    top: 22px;
+    width: 54px;
+    height: 40px;
+    background-color: #00558d;
+    border-radius: 0 30px 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    color: white;
+    z-index: 10;
+}
+
+.project-title-1 {
+    position: absolute;
+    left: 58px;
+    top: 29px;
+    font-weight: 800;
+    font-size: 22px;
+    color: #00558d;
+    margin: 0;
+    z-index: 10;
+}
+
+.project-text-1 {
+    position: absolute;
+    left: 19px;
+    top: 73px;
+    width: 229px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #000;
+    z-index: 10;
+}
+
+.text-highlight {
+    color: #00558d;
+}
+
+.project-image-1 {
+    position: absolute;
+    left: 279px;
+    top: 61px;
+    width: 161px;
+    height: 188px;
+    border-radius: 30px 0 0 30px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.project-image-1 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-decoration-left {
+    position: absolute;
+    left: 0;
+    top: 77px;
+    width: 18px;
+    height: 1px;
+    background-color: #00558d;
+    border-radius: 0 10px 10px 0;
+    z-index: 10;
+}
+
+.project-decoration-left::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 15px;
+    height: 1px;
+    background-color: #00558d;
+    border-radius: 0 10px 10px 0;
+}
+
+/* Section 2: Мироносицы 21 века */
+/* Number: x=440 (right), y=277 (absolute: 574+277=851) */
+.project-section-2 {
+    position: absolute;
+    left: 0;
+    top: 574px;
+    width: 440px;
+}
+
+.project-number-2 {
+    position: absolute;
+    right: 0;
+    top: 277px;
+    width: 54px;
+    height: 40px;
+    background-color: #00558d;
+    border-radius: 30px 0 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    color: white;
+    z-index: 10;
+}
+
+.project-title-2 {
+    position: absolute;
+    left: 150px;
+    top: 280px;
+    font-weight: 800;
+    font-size: 22px;
+    color: #00558d;
+    margin: 0;
+    z-index: 10;
+}
+
+.project-text-2 {
+    position: absolute;
+    left: 157px;
+    top: 328px;
+    width: 261px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #000;
+    text-align: right;
+    z-index: 10;
+}
+
+.project-text-2 p {
+    margin: 0;
+}
+
+.project-image-2 {
+    position: absolute;
+    left: 0;
+    top: 262px;
+    width: 142px;
+    height: 142px;
+    border-radius: 0 30px 30px 0;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.project-image-2 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-decoration-right {
+    position: absolute;
+    right: 0;
+    top: 336px;
+    width: 18px;
+    height: 1px;
+    background-color: #00558d;
+    border-radius: 10px 0 0 10px;
+    z-index: 10;
+}
+
+.project-decoration-right::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 3px;
+    width: 15px;
+    height: 1px;
+    background-color: #00558d;
+    border-radius: 10px 0 0 10px;
+}
+
+.project-section-3 {
+    position: absolute;
+    left: 0;
+    top: 574px;
+    width: 440px;
+    height: 900px;
+}
+
+.project-number-3 {
+    position: absolute;
+    left: 0;
+    top: 432px;
+    width: 54px;
+    height: 40px;
+    background-color: #00558d;
+    border-radius: 0 30px 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    color: white;
+    z-index: 10;
+}
+
+.project-title-3 {
+    position: absolute;
+    left: 59px;
+    top: 439px;
+    font-weight: 800;
+    font-size: 22px;
+    color: #00558d;
+    margin: 0;
+    width: 323px;
+    z-index: 10;
+}
+
+/* Speaker slider */
+.speaker-slider {
+    position: absolute;
+    left: 41px;
+    top: 494px; /* Позиция относительно project-section-3 */
+    width: 359px;
+    z-index: 10;
+}
+
+.speaker-slider__viewport {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+
+.speaker-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.speaker-slide.is-active {
+    opacity: 1;
+    position: relative;
+}
+
+.speaker-slide img {
+    width: 359px;
+    height: 239px;
+    object-fit: cover;
+    border-radius: 30px;
+    margin-bottom: 14px;
+    display: block;
+}
+
+.speaker-slide__text {
+    width: 100%;
+    text-align: center;
+}
+
+.speaker-slide__title {
+    font-size: 16px;
+    font-weight: 400;
+    color: #000;
+    margin: 0;
+    line-height: 1.5;
+    width: 285px;
+    margin: 0 auto;
+    text-align: center;
+}
+.speaker-slider__controls {
+    position: absolute;
+    left: 50%;
+    top: 253px;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.speaker-slider__button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #00558d;
+    background: white;
+    color: #00558d;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.speaker-slider__button:hover {
+    background: #00558d;
+    color: white;
+}
+
+/* --- SECTION 4: Опыт в молодежной политике --- */
+.project-section-4 {
+    position: absolute;
+    left: 0;
+    top: 1474px; /* 574 + 900 = 1474px */
+    width: 440px;
+    height: 956px;
+    padding-bottom: 40px;
+    z-index: 10;
+}
+
+.project-number-4 {
+    position: absolute;
+    left: 0;
+    top: 22px;
+    width: 54px;
+    height: 40px;
+    background-color: #00558d;
+    border-radius: 0 30px 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    color: white;
+    z-index: 10;
+}
+
+.project-title-4 {
+    position: absolute;
+    left: 58px;
+    top: 29px;
+    font-weight: 800;
+    font-size: 22px;
+    color: #00558d;
+    margin: 0;
+    width: 332px;
+    z-index: 10;
+}
+
+.experience-content {
+    position: absolute;
+    left: 0;
+    top: 82px;
+    width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.experience-text {
+    padding: 0 19px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #000;
+}
+
+.experience-text p {
+    margin: 0 0 16px 0;
+}
+
+.experience-text p:last-child {
+    margin-bottom: 0;
+}
+
+.experience-text strong {
+    font-weight: 700;
+    color: #00558d;
+}
+
+.experience-text ul {
+    margin: 12px 0;
+    padding-left: 20px;
+    list-style: none;
+}
+
+.experience-text ul li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 8px;
+}
+
+.experience-text ul li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #00558d;
+    font-weight: bold;
+}
+
+/* Gallery with masonry-style layout */
+.experience-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0 19px;
+    margin-top: 8px;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #f5f5f5;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 85, 141, 0.2);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Разные размеры для создания интересной компоновки */
+.gallery-item-1 {
+    grid-column: 1;
+    grid-row: 1;
+    aspect-ratio: 160 / 107;
+}
+
+.gallery-item-2 {
+    grid-column: 2;
+    grid-row: 1;
+    aspect-ratio: 168 / 112;
+}
+
+.gallery-item-3 {
+    grid-column: 2;
+    grid-row: 2;
+    aspect-ratio: 187 / 125;
+}
+
+.gallery-item-4 {
+    grid-column: 1;
+    grid-row: 2 / 3;
+    aspect-ratio: 201 / 124;
+}
+
+/* --- SECTION 5: Общественная деятельность --- */
+.project-section-5 {
+    position: absolute;
+    left: 0;
+    top: 2430px; /* 1474 + 956 = 2430px */
+    width: 440px;
+    height: 1690px; /* Увеличено на 90px */
+    padding-bottom: 40px;
+}
+
+.project-number-5 {
+    position: absolute;
+    left: 0;
+    top: 22px;
+    width: 54px;
+    height: 40px;
+    background-color: #00558d;
+    border-radius: 0 30px 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    color: white;
+    z-index: 10;
+}
+
+.project-title-5 {
+    position: absolute;
+    left: 58px;
+    top: 29px;
+    font-weight: 800;
+    font-size: 22px;
+    color: #00558d;
+    margin: 0;
+    width: 320px;
+    z-index: 10;
+}
+
+.public-activity-content {
+    position: absolute;
+    left: 0;
+    top: 78px;
+    width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.public-activity-text {
+    padding: 0 19px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #000;
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.public-activity-text p {
+    margin: 0;
+}
+
+.public-gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 30px;
+    background: #f5f5f5;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    margin: 8px 0;
+}
+
+.public-gallery-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 85, 141, 0.2);
+}
+
+.public-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Размеры изображений */
+.public-gallery-item-1 {
+    aspect-ratio: 296 / 197;
+}
+
+.public-gallery-item-2 {
+    aspect-ratio: 303 / 202;
+}
+
+.public-gallery-item-3 {
+    aspect-ratio: 298 / 199;
+}
+
+.public-gallery-item-4 {
+    aspect-ratio: 298 / 180;
+}
+
+/* --- SECTION 6: Образование --- */
+.project-section-6 {
+    position: absolute;
+    left: 0;
+    top: 4120px; /* 2430 + 1690 = 4120px */
+    width: 440px;
+    height: 956px; /* Высота секции */
+    padding-bottom: 40px;
+    z-index: 10;
+    overflow: visible; /* Разрешаем видимость элементов за границами */
+}
+
+.project-number-6 {
+    position: absolute;
+    left: 0;
+    top: 22px;
+    width: 54px;
+    height: 40px;
+    background-color: #00558d;
+    border-radius: 0 30px 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    color: white;
+    z-index: 10;
+}
+
+.project-title-6 {
+    position: absolute;
+    left: 58px;
+    top: 29px;
+    font-weight: 800;
+    font-size: 22px;
+    color: #00558d;
+    margin: 0;
+    width: 147px;
+    z-index: 10;
+}
+
+.education-content {
+    position: absolute;
+    left: 0;
+    top: 78px;
+    width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.education-text {
+    padding: 0 19px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #000;
+    width: 360px;
+}
+
+.education-text p {
+    margin: 0 0 16px 0;
+}
+
+.education-text p:last-child {
+    margin-bottom: 0;
+}
+
+.education-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 19px;
+    margin-top: 16px;
+}
+
+.education-gallery-item {
+    position: relative;
+    overflow: hidden; /* Нужно для border-radius */
+    border-radius: 30px;
+    background: #f5f5f5;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.education-gallery-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 85, 141, 0.15);
+}
+
+.education-gallery-item img {
+    width: 100%;
+    height: auto; /* Автоматическая высота для сохранения пропорций */
+    display: block;
+    object-fit: contain; /* Показываем изображение полностью без обрезки */
+    object-position: center;
+}
+
+/* --- SECTION 7: Мои ценности (Финальная секция) --- */
+.project-section-7 {
+    position: absolute;
+    left: 0;
+    top: 5276px; /* 5076 + 200 = 5276px (увеличен отступ на 200px) */
+    width: 440px;
+    height: 348px; /* 78 (текст) + 66 (отступ) + 204 (баннер) = 348px */
+    padding-bottom: 40px;
+    z-index: 20;
+}
+
+.project-number-7 {
+    position: absolute;
+    left: 0;
+    top: 22px;
+    width: 54px;
+    height: 40px;
+    background: linear-gradient(135deg, #00558d 0%, #004470 100%);
+    border-radius: 0 30px 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    color: white;
+    z-index: 20;
+}
+
+.project-title-7 {
+    position: absolute;
+    left: 58px;
+    top: 29px;
+    font-weight: 800;
+    font-size: 22px;
+    color: #00558d;
+    margin: 0;
+    width: 156px;
+    z-index: 20;
+}
+
+.values-content {
+    position: absolute;
+    left: 0;
+    top: 78px;
+    width: 440px;
+}
+
+.values-text {
+    position: absolute;
+    left: 19px;
+    top: 0;
+    width: 360px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #000;
+    margin: 0;
+    z-index: 10;
+}
+
+.values-banner {
+    position: relative;
+    left: 0;
+    top: 66px; /* 144 - 78 = 66px от начала content */
+    width: 440px;
+    height: 204px; /* Увеличено с 164px до 204px для размещения футера с отступом */
+    background: linear-gradient(135deg, #00558d 0%, #004470 100%);
+    padding: 0;
+    z-index: 10;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.values-collaboration {
+    position: absolute;
+    left: 50%;
+    top: 18px; /* 162 - 144 = 18px от начала баннера */
+    transform: translateX(-50%);
+    font-weight: 500;
+    font-size: 18px;
+    color: white;
+    margin: 0;
+    white-space: nowrap;
+    z-index: 11;
+}
+
+.values-divider {
+    position: absolute;
+    left: 0;
+    top: 40px; /* 184 - 144 = 40px от начала баннера */
+    width: 440px;
+    height: 1px;
+    background-color: white;
+    z-index: 11;
+}
+
+.values-contact-button {
+    position: absolute;
+    left: 50%;
+    top: 48px; /* 192 - 144 = 48px от начала баннера */
+    transform: translateX(-50%);
+    width: 404px;
+    height: 36px;
+    background: white;
+    border: 1px solid #549ccd;
+    border-radius: 10px;
+    font-family: 'Roboto Flex', sans-serif;
+    font-weight: 300;
+    font-size: 18px;
+    color: transparent;
+    cursor: pointer;
+    z-index: 11;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.values-contact-button::after {
+    content: "Связаться";
+    background: linear-gradient(to right, var(--blue-gradient-start), var(--blue-gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.values-footer {
+    position: absolute;
+    left: 50%;
+    top: 100px; /* 48 (кнопка top) + 36 (кнопка height) + 16 (отступ) = 100px от начала баннера */
+    transform: translateX(-50%);
+    font-weight: 500;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    margin: 0;
+    z-index: 12; /* Выше кнопки, чтобы не перекрывалась */
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Responsive Scaling */
+@media (max-width: 440px) {
+    .main-wrapper {
+        transform-origin: top left;
+        transform: scale(calc(100vw / 440));
+        height: calc(5664px * (100vw / 440));
+    }
+}
