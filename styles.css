@@ -194,14 +194,47 @@ body {
     z-index: 30;
 }
 
-/* Message Icon: x=404, y=303 (was 410) */
-.message-icon {
+/* Social Media Icons */
+/* Telegram Icon: x=402, y=393 (relative to frame, but y=393-233=160 from banner start) */
+.telegram-icon {
     position: absolute;
-    left: 404px;
-    top: 303px;
+    left: 402px;
+    top: 393px; /* 233 (banner top) + 160 = 393px */
     width: 24px;
     height: 24px;
     z-index: 30;
+    display: block;
+    transition: opacity 0.3s ease;
+    text-decoration: none;
+}
+
+.telegram-icon:hover {
+    opacity: 0.8;
+}
+
+/* VK Icon: x=402, y=427 */
+.vk-icon {
+    position: absolute;
+    left: 402px;
+    top: 427px; /* 233 (banner top) + 194 = 427px */
+    width: 24px;
+    height: 24px;
+    z-index: 30;
+    display: block;
+    transition: opacity 0.3s ease;
+    text-decoration: none;
+}
+
+.vk-icon:hover {
+    opacity: 0.8;
+}
+
+.social-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1); /* Делаем иконки белыми */
+    display: block;
 }
 
 /* Profile Status: x=66, y=365 (was 472) */
