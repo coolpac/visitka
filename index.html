@@ -15,25 +15,21 @@
         <div class="main-container">
             <!-- Hero Image Section (Component 1) with Slider -->
             <!-- y=107, h=277. Ends at 384. Rounded bottom corners. Z-index: 20 (above banner) -->
-            <div class="hero-image-container">
+            <div class="hero-image-container skeleton-loader">
                 <div class="hero-slider">
                     <div class="hero-slider__viewport">
                         <div class="hero-slide is-active">
-                            <img src="images/hero-slide1.png" alt="Анна Иващенко" class="hero-image">
+                            <img src="data:," data-src="images/hero-slide1.png" alt="Анна Иващенко" class="hero-image lazy">
                         </div>
                         <div class="hero-slide">
-                            <img src="images/hero-slide2.png" alt="Анна Иващенко" class="hero-image">
+                            <img src="data:," data-src="images/hero-slide2.png" alt="Анна Иващенко" class="hero-image lazy">
                         </div>
                         <div class="hero-slide">
-                            <img src="images/hero-slide3.png" alt="Анна Иващенко" class="hero-image">
+                            <img src="data:," data-src="images/hero-slide3.png" alt="Анна Иващенко" class="hero-image lazy">
                         </div>
                         <div class="hero-slide">
-                            <img src="images/hero-slide4.png" alt="Анна Иващенко" class="hero-image">
+                            <img src="data:," data-src="images/hero-slide4.png" alt="Анна Иващенко" class="hero-image lazy">
                         </div>
-                    </div>
-                    <div class="hero-slider__controls">
-                        <button class="hero-slider__button" data-action="prev">‹</button>
-                        <button class="hero-slider__button" data-action="next">›</button>
                     </div>
                 </div>
             </div>
@@ -44,8 +40,8 @@
 
             <!-- Profile Picture (photo_2025-11-19 00.23.23 1) -->
             <!-- y=340. Z-index: 30 (on top) -->
-            <div class="profile-picture">
-                <img src="images/profile.png" alt="Анна Иващенко">
+            <div class="profile-picture skeleton-loader">
+                <img src="data:," data-src="images/profile.png" alt="Анна Иващенко" class="lazy">
             </div>
             
             <!-- Profile Name (Text) -->
@@ -94,8 +90,8 @@
                 Веду телеграм-канал "Иващенко сообщает"
             </p>
             <div class="activity-overlay"></div>
-            <div class="activity-image">
-                <img src="images/activity.png" alt="Конференция">
+            <div class="activity-image skeleton-loader">
+                <img src="data:," data-src="images/activity.png" alt="Конференция" class="lazy">
             </div>
 
             <!-- Projects Section - продолжение страницы -->
@@ -109,8 +105,8 @@
                     <span>На слушаниях Национального проекта "Молодежь и дети" </span><br>
                     <span>в </span><span class="text-highlight">Государственной Думе</span><span> обратила внимание на необходимость поддерживать молодежные православные сообщества</span>
                 </div>
-                <div class="project-image-1">
-                    <img src="images/project1.png" alt="Развитие сообществ">
+                <div class="project-image-1 skeleton-loader">
+                    <img src="data:," data-src="images/project1.png" alt="Развитие сообществ" class="lazy">
                 </div>
                 <div class="project-decoration-left"></div>
             </div>
@@ -124,8 +120,8 @@
                     <p>о благочестивом образе жизни </p>
                     <p>в истории и современной России </p>
                 </div>
-                <div class="project-image-2">
-                    <img src="images/project2.png" alt="Мироносицы 21 века">
+                <div class="project-image-2 skeleton-loader">
+                    <img src="data:," data-src="images/project2.png" alt="Мироносицы 21 века" class="lazy">
                 </div>
                 <div class="project-decoration-right"></div>
             </div>
@@ -138,25 +134,25 @@
                 <section class="speaker-slider" aria-label="Темы выступлений">
                     <div class="speaker-slider__viewport">
                         <article class="speaker-slide is-active" data-slide-title="Традиционные духовно-нравственные ценности России">
-                            <img src="images/slide1.png" alt="Традиционные духовно-нравственные ценности России">
+                            <img src="data:," data-src="images/slide1.png" alt="Традиционные духовно-нравственные ценности России" class="lazy">
                             <div class="speaker-slide__text">
                                 <p class="speaker-slide__title">Традиционные духовно-нравственные ценности России</p>
                             </div>
                         </article>
                         <article class="speaker-slide" data-slide-title="Организация работы с молодежью">
-                            <img src="images/slide2.png" alt="Организация работы с молодежью">
+                            <img src="data:," data-src="images/slide2.png" alt="Организация работы с молодежью" class="lazy">
                             <div class="speaker-slide__text">
                                 <p class="speaker-slide__title">Организация работы с молодежью</p>
                             </div>
                         </article>
                         <article class="speaker-slide" data-slide-title="Молодежная политика для молодого политика">
-                            <img src="images/slide3.png" alt="Молодежная политика для молодого политика">
+                            <img src="data:," data-src="images/slide3.png" alt="Молодежная политика для молодого политика" class="lazy">
                             <div class="speaker-slide__text">
                                 <p class="speaker-slide__title">Молодежная политика для молодого политика</p>
                             </div>
                         </article>
                         <article class="speaker-slide" data-slide-title="Медиа сопровождение проектов и компаний">
-                            <img src="images/slide4.png" alt="Медиа сопровождение проектов и компаний">
+                            <img src="data:," data-src="images/slide4.png" alt="Медиа сопровождение проектов и компаний" class="lazy">
                             <div class="speaker-slide__text">
                                 <p class="speaker-slide__title">Медиа сопровождение проектов и компаний</p>
                             </div>
@@ -191,17 +187,17 @@
                     </div>
                     
                     <div class="experience-gallery">
-                        <div class="gallery-item gallery-item-1">
-                            <img src="images/experience1.png" alt="Опыт работы">
+                        <div class="gallery-item gallery-item-1 skeleton-loader">
+                            <img src="data:," data-src="images/experience1.png" alt="Опыт работы" class="lazy">
                         </div>
-                        <div class="gallery-item gallery-item-2">
-                            <img src="images/experience2.png" alt="Опыт работы">
+                        <div class="gallery-item gallery-item-2 skeleton-loader">
+                            <img src="data:," data-src="images/experience2.png" alt="Опыт работы" class="lazy">
                         </div>
-                        <div class="gallery-item gallery-item-3">
-                            <img src="images/experience3.png" alt="Опыт работы">
+                        <div class="gallery-item gallery-item-3 skeleton-loader">
+                            <img src="data:," data-src="images/experience3.png" alt="Опыт работы" class="lazy">
                         </div>
-                        <div class="gallery-item gallery-item-4">
-                            <img src="images/experience4.png" alt="Опыт работы">
+                        <div class="gallery-item gallery-item-4 skeleton-loader">
+                            <img src="data:," data-src="images/experience4.png" alt="Опыт работы" class="lazy">
                         </div>
                     </div>
                 </div>
@@ -215,25 +211,25 @@
                 <div class="public-activity-content">
                     <div class="public-activity-text">
                         <p>Выступаю за защиту жизни детей с первых дней. На форуме "Территория смыслов" задала Лидерам Фракций вопрос о выводе абортов из ОМС.</p>
-                        <div class="public-gallery-item public-gallery-item-1">
-                            <img src="images/activity1.png" alt="Общественная деятельность">
+                        <div class="public-gallery-item public-gallery-item-1 skeleton-loader">
+                            <img src="data:," data-src="images/activity1.png" alt="Общественная деятельность" class="lazy">
                         </div>
                         
                         <p>На форуме "Сохраним жизнь" и "Отцы за жизнь" обратила внимание на необходимость просвещения молодежи о демографической ситуации в России, в том числе через проекты и форумы молодежной государственной политики</p>
-                        <div class="public-gallery-item public-gallery-item-2">
-                            <img src="images/activity2.png" alt="Общественная деятельность">
+                        <div class="public-gallery-item public-gallery-item-2 skeleton-loader">
+                            <img src="data:," data-src="images/activity2.png" alt="Общественная деятельность" class="lazy">
                         </div>
                         
                         <p>Посещаю молебны о здравии воинов на СВО. Во время мобилизации работала пресс-секретарем Республиканского общественного движения помощи мобилизованным и их семьям «Ярдэм Янэшэ! Помощь рядом!»</p>
-                        <div class="public-gallery-item public-gallery-item-3">
-                            <img src="images/activity3.png" alt="Общественная деятельность">
+                        <div class="public-gallery-item public-gallery-item-3 skeleton-loader">
+                            <img src="data:," data-src="images/activity3.png" alt="Общественная деятельность" class="lazy">
                         </div>
                         
                         <p>Член Экспертного совета Молодежного Парламента при Государственной Думе РФ</p>
                         <p>Финалистка конкурса управленцев Лидеры России</p>
                         <p>Участница Всероссийских молодёжных форумов «Территория Смыслов», «ШУМ», «Восток», «Иволга» и др 2017-2025 гг.</p>
-                        <div class="public-gallery-item public-gallery-item-4">
-                            <img src="images/activity4.png" alt="Общественная деятельность">
+                        <div class="public-gallery-item public-gallery-item-4 skeleton-loader">
+                            <img src="data:," data-src="images/activity4.png" alt="Общественная деятельность" class="lazy">
                         </div>
                     </div>
                 </div>
@@ -253,11 +249,11 @@
                     </div>
                     
                     <div class="education-gallery">
-                        <div class="education-gallery-item education-gallery-item-1">
-                            <img src="images/education1.png" alt="Образование">
+                        <div class="education-gallery-item education-gallery-item-1 skeleton-loader">
+                            <img src="data:," data-src="images/education1.png" alt="Образование" class="lazy">
                         </div>
-                        <div class="education-gallery-item education-gallery-item-2">
-                            <img src="images/education2.png" alt="Образование">
+                        <div class="education-gallery-item education-gallery-item-2 skeleton-loader">
+                            <img src="data:," data-src="images/education2.png" alt="Образование" class="lazy">
                         </div>
                     </div>
                 </div>
