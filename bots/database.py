@@ -3,9 +3,12 @@
 """
 import sqlite3
 import json
+import logging
 from datetime import datetime
 from typing import Optional, List, Dict
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 class Database:
     def __init__(self, db_file: str = 'bots/database.db'):
@@ -46,7 +49,7 @@ class Database:
             )
         ''')
         
-        # Таблица рассылок
+        # Таблица рассылок (создаем сначала базовую версию)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS broadcasts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,12 +57,35 @@ class Database:
                 message_text TEXT,
                 sent_count INTEGER DEFAULT 0,
                 failed_count INTEGER DEFAULT 0,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                scheduled_at TIMESTAMP,
-                is_scheduled INTEGER DEFAULT 0,
-                segment_type TEXT
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+        
+        # Миграция: добавляем новые колонки, если их нет
+        # Проверяем существование колонок через PRAGMA table_info
+        cursor.execute("PRAGMA table_info(broadcasts)")
+        existing_columns = [row[1] for row in cursor.fetchall()]
+        
+        if 'scheduled_at' not in existing_columns:
+            try:
+                cursor.execute('ALTER TABLE broadcasts ADD COLUMN scheduled_at TIMESTAMP')
+                logger.info("Добавлена колонка scheduled_at в таблицу broadcasts")
+            except sqlite3.OperationalError as e:
+                logger.warning(f"Не удалось добавить колонку scheduled_at: {e}")
+        
+        if 'is_scheduled' not in existing_columns:
+            try:
+                cursor.execute('ALTER TABLE broadcasts ADD COLUMN is_scheduled INTEGER DEFAULT 0')
+                logger.info("Добавлена колонка is_scheduled в таблицу broadcasts")
+            except sqlite3.OperationalError as e:
+                logger.warning(f"Не удалось добавить колонку is_scheduled: {e}")
+        
+        if 'segment_type' not in existing_columns:
+            try:
+                cursor.execute('ALTER TABLE broadcasts ADD COLUMN segment_type TEXT')
+                logger.info("Добавлена колонка segment_type в таблицу broadcasts")
+            except sqlite3.OperationalError as e:
+                logger.warning(f"Не удалось добавить колонку segment_type: {e}")
         
         # Таблица шаблонов рассылок
         cursor.execute('''

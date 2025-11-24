@@ -1606,12 +1606,17 @@ async def cmd_history(message: types.Message):
 @dp.callback_query(F.data == "menu_stats")
 async def menu_stats(callback: types.CallbackQuery):
     """Обработка меню статистики"""
+    logger.info(f"Получен callback menu_stats от пользователя {callback.from_user.id}")
+    
     if not is_admin(callback.from_user.id):
         await callback.answer("❌ Нет доступа", show_alert=True)
         return
     
     try:
+        # Отвечаем на callback сразу
         await callback.answer()
+        logger.info(f"Callback menu_stats обработан для пользователя {callback.from_user.id}")
+        
         # Используем callback.message.answer вместо передачи callback.message в функцию
         if callback.message:
             await cmd_stats(callback.message)
@@ -1634,7 +1639,9 @@ async def menu_broadcast(callback: types.CallbackQuery, state: FSMContext):
         return
     
     try:
+        # Отвечаем на callback сразу
         await callback.answer()
+        
         if callback.message:
             await cmd_broadcast(callback.message, state)
         else:
@@ -1655,7 +1662,9 @@ async def menu_schedule(callback: types.CallbackQuery, state: FSMContext):
         return
     
     try:
+        # Отвечаем на callback сразу
         await callback.answer()
+        
         if callback.message:
             await cmd_schedule(callback.message, state)
         else:
@@ -1676,7 +1685,9 @@ async def menu_templates(callback: types.CallbackQuery):
         return
     
     try:
+        # Отвечаем на callback сразу
         await callback.answer()
+        
         if callback.message:
             await cmd_templates(callback.message)
         else:
@@ -1697,7 +1708,9 @@ async def menu_users(callback: types.CallbackQuery, state: FSMContext):
         return
     
     try:
+        # Отвечаем на callback сразу
         await callback.answer()
+        
         if callback.message:
             await cmd_users(callback.message, state)
         else:
@@ -1718,7 +1731,9 @@ async def menu_history(callback: types.CallbackQuery):
         return
     
     try:
+        # Отвечаем на callback сразу
         await callback.answer()
+        
         if callback.message:
             await cmd_history(callback.message)
         else:

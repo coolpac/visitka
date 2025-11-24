@@ -31,42 +31,86 @@ class TelegramWebApp {
      * Настройка приложения для работы в Telegram
      */
     setupTelegramApp() {
-        // Уведомляем Telegram, что приложение готово
-        this.webApp.ready();
+        try {
+            // Уведомляем Telegram, что приложение готово
+            this.webApp.ready();
 
-        // ВАЖНО: Сначала запрашиваем viewport для получения правильных размеров
-        this.webApp.requestViewport();
+            // ВАЖНО: Сначала запрашиваем viewport для получения правильных размеров
+            this.webApp.requestViewport();
 
-        // Расширяем приложение на весь экран (убирает стандартные отступы)
-        this.webApp.expand();
+            // Расширяем приложение на весь экран (убирает стандартные отступы)
+            this.webApp.expand();
 
-        // Блокируем закрытие приложения свайпом - используем все доступные методы
-        this.setupSwipeProtection();
+            // Настраиваем цвета заголовка и фона в соответствии с темой
+            this.setupTheme();
 
-        // Настраиваем цвета заголовка и фона в соответствии с темой
-        this.setupTheme();
+            // Настраиваем обработчики событий (до кнопок, чтобы перехватить события)
+            this.setupEventHandlers();
 
-        // Настраиваем кнопки
-        this.setupButtons();
+            // Настраиваем кнопки (после expand и ready)
+            this.setupButtons();
 
-        // Настраиваем обработчики событий
-        this.setupEventHandlers();
+            // Включаем тактильную обратную связь
+            this.enableHapticFeedback();
 
-        // Включаем тактильную обратную связь
-        this.enableHapticFeedback();
+            // ВАЖНО: Убираем лишнее белое пространство и настраиваем стили СРАЗУ
+            console.log('[TG-Init] 🎯 Вызов removeBottomSpacing (первый раз)');
+            this.removeBottomSpacing();
 
-        // Убираем лишнее белое пространство внизу (учитывая шапку и подвал Telegram)
-        this.removeBottomSpacing();
+            // Блокируем закрытие приложения свайпом - вызываем после небольшой задержки
+            // чтобы SDK был полностью готов
+            setTimeout(() => {
+                console.log('[TG-Init] 🛡️ Вызов setupSwipeProtection');
+                this.setupSwipeProtection();
+            }, 100);
+            
+            // НЕ вызываем removeBottomSpacing повторно - функция защищена от множественных вызовов
+            // Но проверяем, что стили применились после загрузки
+            const checkStylesAfterLoad = () => {
+                setTimeout(() => {
+                    const wrapper = document.querySelector('.main-wrapper');
+                    if (wrapper) {
+                        const computed = window.getComputedStyle(wrapper);
+                        const hasTgClass = document.body.classList.contains('tg-webapp');
+                        const overflowY = computed.overflowY;
+                        console.log('[TG-Init] 🔍 Проверка стилей после загрузки:', {
+                            hasTgClass: hasTgClass,
+                            overflowY: overflowY,
+                            height: computed.height,
+                            width: computed.width
+                        });
+                        
+                        if (!hasTgClass || overflowY !== 'auto') {
+                            console.warn('[TG-Init] ⚠️ Стили не применились правильно, повторный вызов removeBottomSpacing');
+                            // Сбрасываем флаг для повторного вызова
+                            window._telegramRemoveBottomSpacingCalled = false;
+                            this.removeBottomSpacing();
+                        } else {
+                            console.log('[TG-Init] ✅ Стили применены правильно');
+                        }
+                    }
+                }, 500);
+            };
+            
+            if (document.readyState === 'complete') {
+                checkStylesAfterLoad();
+            } else {
+                window.addEventListener('load', checkStylesAfterLoad, { once: true });
+            }
 
-        // Настраиваем полноэкранный режим если доступен
-        this.setupFullscreenMode();
+            // Настраиваем полноэкранный режим если доступен
+            this.setupFullscreenMode();
 
-        console.log('Telegram Web App инициализирован:', {
-            version: this.webApp.version,
-            platform: this.webApp.platform,
-            colorScheme: this.webApp.colorScheme,
-            themeParams: this.webApp.themeParams
-        });
+            console.log('✅ Telegram Web App инициализирован:', {
+                version: this.webApp.version,
+                platform: this.webApp.platform,
+                colorScheme: this.webApp.colorScheme,
+                themeParams: this.webApp.themeParams,
+                isExpanded: this.webApp.isExpanded
+            });
+        } catch (error) {
+            console.error('❌ Ошибка при настройке Telegram Web App:', error);
+        }
     }
 
     /**
@@ -128,31 +172,59 @@ class TelegramWebApp {
      * Она интегрирована в интерфейс Telegram и всегда видна поверх контента
      */
     setupMainButton() {
-        const mainButton = this.webApp.MainButton;
-        
-        // Устанавливаем текст кнопки
-        mainButton.setText('Связаться');
-        
-        // Устанавливаем цвет кнопки из темы или используем градиент
-        const buttonColor = this.webApp.themeParams.button_color || '#94d4ff';
-        mainButton.setParams({
-            color: buttonColor,
-            text_color: this.webApp.themeParams.button_text_color || '#ffffff'
-        });
+        try {
+            if (!this.webApp || !this.webApp.MainButton) {
+                console.error('❌ MainButton недоступен');
+                return;
+            }
+            
+            const mainButton = this.webApp.MainButton;
+            
+            // Устанавливаем текст кнопки
+            mainButton.setText('Связаться');
+            
+            // Устанавливаем цвет кнопки из темы или используем градиент
+            const buttonColor = this.webApp.themeParams?.button_color || '#94d4ff';
+            const textColor = this.webApp.themeParams?.button_text_color || '#ffffff';
+            
+            mainButton.setParams({
+                color: buttonColor,
+                text_color: textColor
+            });
 
-        // Обработчик клика на главную кнопку
-        mainButton.onClick(() => {
-            this.handleContactClick();
-        });
+            // Обработчик клика на главную кнопку
+            mainButton.onClick(() => {
+                this.handleContactClick();
+            });
 
-        // Скрываем HTML кнопки на странице, так как используем MainButton
-        this.hideHTMLContactButtons();
+            // Скрываем HTML кнопки на странице, так как используем MainButton
+            this.hideHTMLContactButtons();
 
-        // Показываем кнопку при прокрутке к секциям с контактами
-        this.setupMainButtonVisibility();
+            // Показываем кнопку при прокрутке к секциям с контактами
+            this.setupMainButtonVisibility();
 
-        // Показываем MainButton сразу, так как на странице есть кнопки контакта
-        mainButton.show();
+            // ВАЖНО: Показываем MainButton после небольшой задержки, чтобы убедиться что все готово
+            setTimeout(() => {
+                try {
+                    mainButton.show();
+                    console.log('✅ MainButton показан');
+                } catch (error) {
+                    console.error('❌ Ошибка при показе MainButton:', error);
+                    // Пробуем еще раз через секунду
+                    setTimeout(() => {
+                        try {
+                            mainButton.show();
+                            console.log('✅ MainButton показан (повторная попытка)');
+                        } catch (e) {
+                            console.error('❌ Ошибка при повторной попытке показа MainButton:', e);
+                        }
+                    }, 1000);
+                }
+            }, 100);
+            
+        } catch (error) {
+            console.error('❌ Ошибка при настройке MainButton:', error);
+        }
     }
 
     /**
@@ -178,30 +250,50 @@ class TelegramWebApp {
      * Управление видимостью MainButton при прокрутке
      */
     setupMainButtonVisibility() {
-        const mainButton = this.webApp.MainButton;
-        const contactButtons = document.querySelectorAll('.contact-button, .values-contact-button');
-        
-        // Показываем кнопку, если есть кнопки контакта на странице
-        if (contactButtons.length > 0) {
-            mainButton.show();
-        }
-
-        // Отслеживаем прокрутку для показа/скрытия кнопки
-        let lastScrollTop = 0;
-        const scrollThreshold = 100;
-
-        const handleScroll = () => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            // Показываем кнопку при прокрутке вниз
-            if (scrollTop > scrollThreshold && scrollTop > lastScrollTop) {
-                mainButton.show();
+        try {
+            if (!this.webApp || !this.webApp.MainButton) {
+                console.error('❌ MainButton недоступен для setupMainButtonVisibility');
+                return;
             }
             
-            lastScrollTop = scrollTop;
-        };
+            const mainButton = this.webApp.MainButton;
+            const contactButtons = document.querySelectorAll('.contact-button, .values-contact-button');
+            
+            // Показываем кнопку, если есть кнопки контакта на странице
+            if (contactButtons.length > 0) {
+                setTimeout(() => {
+                    try {
+                        mainButton.show();
+                        console.log('✅ MainButton показан через setupMainButtonVisibility');
+                    } catch (error) {
+                        console.error('❌ Ошибка при показе MainButton:', error);
+                    }
+                }, 200);
+            }
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
+            // Отслеживаем прокрутку для показа/скрытия кнопки
+            let lastScrollTop = 0;
+            const scrollThreshold = 100;
+
+            const handleScroll = () => {
+                try {
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    
+                    // Показываем кнопку при прокрутке вниз
+                    if (scrollTop > scrollThreshold && scrollTop > lastScrollTop) {
+                        mainButton.show();
+                    }
+                    
+                    lastScrollTop = scrollTop;
+                } catch (error) {
+                    console.error('❌ Ошибка в handleScroll:', error);
+                }
+            };
+
+            window.addEventListener('scroll', handleScroll, { passive: true });
+        } catch (error) {
+            console.error('❌ Ошибка в setupMainButtonVisibility:', error);
+        }
     }
 
     /**
@@ -279,9 +371,25 @@ class TelegramWebApp {
 
         // Обработка изменения viewport
         this.webApp.onEvent('viewportChanged', (event) => {
-            console.log('Viewport изменен:', event);
+            console.log('[TG-Event] 🔄 viewportChanged событие:', {
+                isStateStable: event.isStateStable,
+                viewportHeight: this.webApp.viewportHeight,
+                viewportStableHeight: this.webApp.viewportStableHeight
+            });
             // Можно обновить layout при изменении размера окна
             this.handleViewportChange(event);
+            // НЕ вызываем removeBottomSpacing здесь - функция защищена от множественных вызовов
+            // CSS переменные обновляются автоматически через слушатель в removeBottomSpacing
+            
+            // Показываем MainButton при стабилизации viewport
+            if (event.isStateStable && this.webApp && this.webApp.MainButton) {
+                try {
+                    this.webApp.MainButton.show();
+                    console.log('[TG-Event] ✅ MainButton показан через viewportChanged');
+                } catch (error) {
+                    console.error('[TG-Event] ❌ Ошибка при показе MainButton через viewportChanged:', error);
+                }
+            }
         });
 
         // Обработка закрытия приложения
@@ -551,41 +659,65 @@ class TelegramWebApp {
      * Использует все доступные методы для максимальной защиты
      */
     setupSwipeProtection() {
-        if (!this.isTelegram) return;
+        if (!this.isTelegram) {
+            console.log('[TG-Swipe] ⏭️ setupSwipeProtection: не в Telegram, пропускаем');
+            return;
+        }
+
+        // Защита от множественных вызовов
+        if (window._telegramSwipeProtectionSetup) {
+            console.log('[TG-Swipe] ⚠️ setupSwipeProtection уже вызывался, пропускаем');
+            return;
+        }
+        window._telegramSwipeProtectionSetup = true;
+
+        console.log('[TG-Swipe] 🚀 setupSwipeProtection вызван');
+        console.log('[TG-Swipe] 📊 Состояние SDK:', {
+            version: this.webApp.version,
+            platform: this.webApp.platform,
+            isExpanded: this.webApp.isExpanded,
+            hasEnableClosingConfirmation: typeof this.webApp.enableClosingConfirmation === 'function',
+            hasDisableVerticalSwipes: typeof this.webApp.disableVerticalSwipes === 'function'
+        });
 
         try {
             // Метод 1: enableClosingConfirmation - требует подтверждения перед закрытием
             if (typeof this.webApp.enableClosingConfirmation === 'function') {
                 this.webApp.enableClosingConfirmation();
-                console.log('✅ enableClosingConfirmation включен');
+                console.log('[TG-Swipe] ✅ enableClosingConfirmation включен');
+            } else {
+                console.warn('[TG-Swipe] ⚠️ enableClosingConfirmation недоступен');
             }
 
-            // Метод 2: disableVerticalSwipes - блокирует вертикальные свайпы (если доступен)
+            // Метод 2: disableVerticalSwipes - блокирует вертикальные свайпы (Bot API 7.7+)
+            // ВАЖНО: Вызываем с задержкой после expand() для надежности
             if (typeof this.webApp.disableVerticalSwipes === 'function') {
-                this.webApp.disableVerticalSwipes();
-                console.log('✅ disableVerticalSwipes включен');
+                // Пробуем сразу
+                try {
+                    this.webApp.disableVerticalSwipes();
+                    console.log('[TG-Swipe] ✅ disableVerticalSwipes включен (сразу)');
+                    console.log('[TG-Swipe] 📊 isVerticalSwipesEnabled:', this.webApp.isVerticalSwipesEnabled);
+                } catch (e) {
+                    console.warn('[TG-Swipe] ⚠️ Первая попытка disableVerticalSwipes не удалась:', e.message);
+                    // Если не получилось, пробуем через задержку
+                    setTimeout(() => {
+                        try {
+                            this.webApp.disableVerticalSwipes();
+                            console.log('[TG-Swipe] ✅ disableVerticalSwipes включен (после задержки)');
+                            console.log('[TG-Swipe] 📊 isVerticalSwipesEnabled:', this.webApp.isVerticalSwipesEnabled);
+                        } catch (e2) {
+                            console.error('[TG-Swipe] ❌ disableVerticalSwipes недоступен:', e2);
+                        }
+                    }, 200);
+                }
+            } else {
+                console.warn('[TG-Swipe] ⚠️ disableVerticalSwipes недоступен в этой версии Telegram (требуется Bot API 7.7+)');
             }
 
-            // Метод 3: Обработка события закрытия для предотвращения
-            if (typeof this.webApp.onEvent === 'function') {
-                this.webApp.onEvent('viewportChanged', (event) => {
-                    // Если viewport изменился из-за попытки закрытия, предотвращаем
-                    if (event.isStateStable === false) {
-                        console.log('⚠️ Обнаружена попытка закрытия');
-                    }
-                });
-            }
-
-            // Метод 4: Перехват события закрытия
-            const originalClose = this.webApp.close;
-            this.webApp.close = () => {
-                // Можно добавить дополнительную логику перед закрытием
-                console.log('⚠️ Попытка закрытия приложения');
-                originalClose.call(this.webApp);
-            };
+            console.log('[TG-Swipe] ✅ Защита от свайпа настроена');
 
         } catch (e) {
-            console.error('Ошибка при настройке защиты от свайпа:', e);
+            console.error('[TG-Swipe] ❌ Ошибка при настройке защиты от свайпа:', e);
         }
     }
 
@@ -616,82 +748,164 @@ class TelegramWebApp {
 
     /**
      * Убирает лишнее белое пространство внизу страницы в Telegram
-     * Учитывает шапку и подвал Telegram через contentSafeAreaInsets
+     * Использует правильный подход: body.tg-webapp с position: fixed и прокручиваемый контент
+     * Основано на решении из https://github.com/QB-Quardobot/barsa
      */
     removeBottomSpacing() {
-        if (!this.isTelegram) return;
-        
-        // Получаем правильные отступы с учетом шапки и подвала Telegram
-        // contentSafeAreaInsets доступен в новых версиях Telegram Web App API
-        let contentSafeAreaBottom = 0;
-        
-        // Пробуем получить через API
-        if (this.webApp.contentSafeAreaInsets) {
-            contentSafeAreaBottom = this.webApp.contentSafeAreaInsets.bottom || 0;
-        } else if (this.webApp.safeAreaInsets) {
-            // Fallback на safeAreaInsets если contentSafeAreaInsets недоступен
-            contentSafeAreaBottom = this.webApp.safeAreaInsets.bottom || 0;
+        if (!this.isTelegram) {
+            console.log('[TG-Fix] ⏭️ removeBottomSpacing: не в Telegram, пропускаем');
+            return;
         }
         
-        // Убираем лишнее пространство через CSS
-        // Используем 0, так как expand() уже должен убрать стандартные отступы
-        const style = document.createElement('style');
-        style.id = 'telegram-bottom-spacing-fix';
-        style.textContent = `
-            html {
-                padding-bottom: 0 !important;
-                margin-bottom: 0 !important;
+        // Защита от множественных вызовов
+        const callId = Date.now();
+        if (window._telegramRemoveBottomSpacingCalled) {
+            console.log('[TG-Fix] ⚠️ removeBottomSpacing уже вызывался, пропускаем повторный вызов');
+            return;
+        }
+        window._telegramRemoveBottomSpacingCalled = true;
+        
+        console.log('[TG-Fix] 🚀 removeBottomSpacing вызван (ID:', callId + ')');
+        console.log('[TG-Fix] 📊 Состояние:', {
+            readyState: document.readyState,
+            hasBody: !!document.body,
+            bodyClasses: document.body ? Array.from(document.body.classList) : [],
+            viewportHeight: this.webApp.viewportHeight,
+            viewportStableHeight: this.webApp.viewportStableHeight
+        });
+        
+        // Добавляем класс tg-webapp к body для применения правильных стилей
+        const hadClass = document.body.classList.contains('tg-webapp');
+        document.body.classList.add('tg-webapp');
+        console.log('[TG-Fix] ✅ Класс tg-webapp добавлен к body (был:', hadClass + ')');
+        
+        // Предотвращаем копирование и выделение текста (как в barsa)
+        // ВАЖНО: Добавляем listeners только один раз
+        if (!window._telegramCopyPreventionSetup) {
+            const preventSelection = (e) => {
+                if (e.target && e.target.closest && e.target.closest('input, textarea')) {
+                    return; // Allow selection in inputs
+                }
+                e.preventDefault();
+                return false;
+            };
+            
+            const preventCopy = (e) => {
+                if (e.target && e.target.closest && e.target.closest('input, textarea')) {
+                    return; // Allow copy in inputs
+                }
+                e.preventDefault();
+                if (e.clipboardData) {
+                    e.clipboardData.clearData();
+                }
+                return false;
+            };
+            
+            const preventContextMenu = (e) => {
+                if (e.target && e.target.closest && e.target.closest('input, textarea')) {
+                    return; // Allow context menu in inputs
+                }
+                e.preventDefault();
+                return false;
+            };
+            
+            // Добавляем event listeners для предотвращения копирования
+            document.addEventListener('selectstart', preventSelection, { passive: false });
+            document.addEventListener('copy', preventCopy, { passive: false });
+            document.addEventListener('contextmenu', preventContextMenu, { passive: false });
+            
+            window._telegramCopyPreventionSetup = true;
+            console.log('✅ Защита от копирования установлена');
+        }
+        
+        // CSS fallback для user-select (более надежно)
+        let styleEl = document.getElementById('telegram-user-select-fix');
+        if (!styleEl) {
+            styleEl = document.createElement('style');
+            styleEl.id = 'telegram-user-select-fix';
+            document.head.appendChild(styleEl);
+        }
+        
+        styleEl.textContent = `
+            body.tg-webapp, body.tg-webapp * {
+                -webkit-user-select: none !important;
+                -moz-user-select: none !important;
+                -ms-user-select: none !important;
+                user-select: none !important;
+                -webkit-touch-callout: none !important;
             }
-            body {
-                padding-bottom: 0 !important;
-                margin-bottom: 0 !important;
-                /* Убираем все отступы снизу */
-                overflow-x: hidden !important;
-            }
-            .main-wrapper {
-                margin-bottom: 0 !important;
-                padding-bottom: 0 !important;
-            }
-            .main-container {
-                margin-bottom: 0 !important;
-                padding-bottom: 0 !important;
-            }
-            /* Убираем лишнее пространство после последней секции */
-            .project-section-7 {
-                margin-bottom: 0 !important;
-                padding-bottom: 0 !important;
-            }
-            .values-banner {
-                margin-bottom: 0 !important;
-                padding-bottom: 0 !important;
-            }
-            /* Убираем лишнее пространство внизу страницы */
-            body::after {
-                display: none !important;
+            body.tg-webapp input,
+            body.tg-webapp textarea {
+                -webkit-user-select: text !important;
+                -moz-user-select: text !important;
+                -ms-user-select: text !important;
+                user-select: text !important;
             }
         `;
         
-        // Удаляем старый стиль если есть
-        const oldStyle = document.getElementById('telegram-bottom-spacing-fix');
-        if (oldStyle) {
-            oldStyle.remove();
+        // Обновляем CSS переменные с данными viewport из Telegram API
+        const updateViewportVariables = () => {
+            const vars = {};
+            if (this.webApp.viewportHeight) {
+                const value = this.webApp.viewportHeight + 'px';
+                document.documentElement.style.setProperty('--tg-viewport-height', value);
+                vars.viewportHeight = value;
+            }
+            if (this.webApp.viewportStableHeight) {
+                const value = this.webApp.viewportStableHeight + 'px';
+                document.documentElement.style.setProperty('--tg-viewport-stable-height', value);
+                vars.viewportStableHeight = value;
+            }
+            
+            // Обновляем safe area insets если доступны
+            if (this.webApp.safeAreaInsets) {
+                const top = (this.webApp.safeAreaInsets.top || 0) + 'px';
+                const bottom = (this.webApp.safeAreaInsets.bottom || 0) + 'px';
+                const left = (this.webApp.safeAreaInsets.left || 0) + 'px';
+                const right = (this.webApp.safeAreaInsets.right || 0) + 'px';
+                document.documentElement.style.setProperty('--tg-safe-area-inset-top', top);
+                document.documentElement.style.setProperty('--tg-safe-area-inset-bottom', bottom);
+                document.documentElement.style.setProperty('--tg-safe-area-inset-left', left);
+                document.documentElement.style.setProperty('--tg-safe-area-inset-right', right);
+                vars.safeAreaInsets = { top, bottom, left, right };
+            }
+            console.log('[TG-Fix] 📐 CSS переменные обновлены:', vars);
+        };
+        
+        updateViewportVariables();
+        
+        // Слушаем изменения viewport (только один раз)
+        if (!window._telegramViewportListenerSetup) {
+            this.webApp.onEvent('viewportChanged', () => {
+                console.log('[TG-Fix] 🔄 viewportChanged событие получено');
+                updateViewportVariables();
+            });
+            window._telegramViewportListenerSetup = true;
+            console.log('[TG-Fix] 👂 Слушатель viewportChanged установлен');
         }
         
-        document.head.appendChild(style);
+        // Проверяем примененные стили
+        const wrapper = document.querySelector('.main-wrapper');
+        const container = document.querySelector('.main-container');
+        if (wrapper) {
+            const computed = window.getComputedStyle(wrapper);
+            console.log('[TG-Fix] 📦 .main-wrapper стили:', {
+                width: computed.width,
+                height: computed.height,
+                overflowY: computed.overflowY,
+                transform: computed.transform,
+                position: computed.position
+            });
+        }
+        if (container) {
+            const computed = window.getComputedStyle(container);
+            console.log('[TG-Fix] 📦 .main-container стили:', {
+                width: computed.width,
+                height: computed.height
+            });
+        }
         
-        // Также применяем стили напрямую к body для надежности
-        document.body.style.paddingBottom = '0';
-        document.body.style.marginBottom = '0';
-        document.documentElement.style.paddingBottom = '0';
-        document.documentElement.style.marginBottom = '0';
-        
-        console.log('✅ Убрано лишнее белое пространство внизу', {
-            contentSafeAreaBottom: contentSafeAreaBottom,
-            viewportHeight: this.webApp.viewportHeight,
-            viewportStableHeight: this.webApp.viewportStableHeight,
-            isExpanded: this.webApp.isExpanded,
-            platform: this.webApp.platform
-        });
+        console.log('[TG-Fix] ✅ Telegram Web App стили применены, копирование отключено');
     }
 
     /**

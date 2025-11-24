@@ -25,6 +25,16 @@
     --tg-theme-secondary-bg-color: #f1f1f1;
 }
 
+:root {
+    /* Telegram WebApp viewport variables */
+    --tg-viewport-height: 100vh;
+    --tg-viewport-stable-height: 100vh;
+    --tg-safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --tg-safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    --tg-safe-area-inset-left: env(safe-area-inset-left, 0px);
+    --tg-safe-area-inset-right: env(safe-area-inset-right, 0px);
+}
+
 body {
     font-family: 'Roboto Flex', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: var(--tg-theme-bg-color, #f0f0f0);
@@ -41,12 +51,56 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     /* Поддержка безопасной зоны для Telegram */
-    /* Используем contentSafeAreaInset для учета шапки и подвала Telegram */
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: 0; /* Убрано - используется contentSafeAreaInset через JS */
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+    padding-top: var(--tg-safe-area-inset-top);
+    padding-bottom: var(--tg-safe-area-inset-bottom);
+    padding-left: var(--tg-safe-area-inset-left);
+    padding-right: var(--tg-safe-area-inset-right);
+    position: relative;
+    height: auto;
 }
+
+/* Telegram WebApp specific styles - правильный подход из barsa */
+body.tg-webapp {
+    overscroll-behavior: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    /* Disable text selection for native app feel */
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    /* Disable long-press context menu */
+    -webkit-touch-callout: none !important;
+    /* Prevent zoom */
+    touch-action: pan-y !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Prevent zoom on double tap (но разрешаем прокрутку для main-wrapper) */
+body.tg-webapp * {
+    touch-action: manipulation !important;
+}
+
+/* Разрешаем прокрутку для main-wrapper */
+body.tg-webapp .main-wrapper {
+    touch-action: pan-y !important;
+}
+
+/* Allow text selection in inputs */
+body.tg-webapp input,
+body.tg-webapp textarea {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+    touch-action: auto !important;
+}
+
+/* Telegram WebApp styles - перенесены в секцию TELEGRAM WEB APP SPECIFIC FIXES */
 
 /* Skeleton Loader Base Styles */
 @keyframes skeleton-shimmer {
@@ -104,21 +158,29 @@ img.lazy {
 
 .main-wrapper {
     width: 440px;
-    height: 5500px; /* Уменьшено с 5660px - убрана кнопка и лишнее пространство */
+    height: auto !important; /* Высота устанавливается динамически через JS */
+    min-height: auto !important;
+    max-height: none !important;
     background-color: #ffffff;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
     margin: 0 auto;
     transform-origin: top center;
-    /* Базовые значения для десктопа */
     transform: scale(1);
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
 .main-container {
     position: relative;
     width: 440px;
-    height: 5500px; /* Уменьшено с 5660px */
+    height: auto !important; /* Высота устанавливается динамически через JS */
+    min-height: auto !important;
+    max-height: none !important;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    overflow: visible;
 }
 
 /* --- HERO SECTION --- */
@@ -1154,7 +1216,10 @@ img.lazy {
     width: 440px;
     height: 220px; /* Уменьшено: убрана кнопка "Связаться", уменьшена высота баннера */
     padding-bottom: 0;
+    margin-bottom: 0;
     z-index: 20;
+    /* Предотвращаем появление лишнего пространства после последней секции */
+    overflow: visible;
 }
 
 .project-number-7 {
@@ -1215,8 +1280,11 @@ img.lazy {
     height: 120px; /* Уменьшено: убрана кнопка "Связаться", оставлен только текст и футер */
     background: linear-gradient(135deg, #00558d 0%, #004470 100%);
     padding: 0;
+    margin-bottom: 0;
     z-index: 10;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    /* Предотвращаем появление лишнего пространства */
+    overflow: visible;
 }
 
 .values-collaboration {
@@ -1309,7 +1377,7 @@ img.lazy {
         padding: 0 !important;
     }
     
-    body {
+    body:not(.tg-webapp) {
         background-color: var(--tg-theme-bg-color, #ffffff) !important;
         overflow-x: hidden !important;
         width: 100% !important;
@@ -1321,18 +1389,18 @@ img.lazy {
         align-items: flex-start !important;
         position: relative !important;
         /* Поддержка безопасной зоны для Telegram */
-        /* Используем contentSafeAreaInset для учета шапки и подвала Telegram */
         padding-top: env(safe-area-inset-top) !important;
-        padding-bottom: 0 !important; /* Убрано - используется contentSafeAreaInset через JS */
+        padding-bottom: 0 !important;
         padding-left: env(safe-area-inset-left) !important;
         padding-right: env(safe-area-inset-right) !important;
     }
     
     .main-wrapper {
-        /* Масштабирование применяется через JavaScript */
         transform-origin: top center !important;
         width: 440px !important;
-        height: 5500px !important; /* Уменьшено с 5660px */
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
         box-shadow: none !important;
         margin: 0 auto !important;
         will-change: transform;
@@ -1343,9 +1411,31 @@ img.lazy {
         right: auto !important;
     }
     
+    /* В Telegram WebApp переопределяем стили для прокрутки */
+    /* ВАЖНО: Ширина остается адаптивной (440px из медиа-запроса) */
+    body.tg-webapp .main-wrapper {
+        height: 100vh !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior: contain !important;
+        transform: none !important;
+        margin: 0 auto !important;
+        will-change: auto !important;
+        padding-top: var(--tg-safe-area-inset-top) !important;
+        padding-bottom: var(--tg-safe-area-inset-bottom) !important;
+        padding-left: var(--tg-safe-area-inset-left) !important;
+        padding-right: var(--tg-safe-area-inset-right) !important;
+        /* Ширина остается 440px из медиа-запроса выше */
+    }
+    
+    /* main-container сохраняет адаптивную ширину из медиа-запроса (440px) */
+    
     .main-container {
         width: 440px !important;
-        height: 5500px !important; /* Уменьшено с 5660px */
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
         position: relative !important;
     }
 }
@@ -1359,14 +1449,18 @@ img.lazy {
     .main-wrapper {
         transform: none !important;
         width: 440px !important;
-        height: 5500px !important; /* Уменьшено с 5660px */
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
         margin: 0 auto !important;
         transition: box-shadow 0.3s ease-out;
     }
     
     .main-container {
         width: 440px !important;
-        height: 5500px !important; /* Уменьшено с 5660px */
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
     }
 }
 
@@ -1550,5 +1644,79 @@ img.lazy {
     .main-wrapper {
         container-type: inline-size;
     }
+}
+
+/* ===== TELEGRAM WEB APP SPECIFIC FIXES ===== */
+/* Правильный подход из https://github.com/QB-Quardobot/barsa */
+/* Используем body.tg-webapp с position: fixed и прокручиваемый main-wrapper */
+
+/* Убираем псевдоэлементы, которые могут создавать лишнее пространство */
+.main-wrapper::after,
+.main-container::after,
+.project-section-7::after,
+.values-banner::after,
+.values-content::after {
+    display: none !important;
+    content: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Telegram WebApp: body становится fixed контейнером */
+body.tg-webapp {
+    overscroll-behavior: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Telegram WebApp: main-wrapper становится прокручиваемым контейнером */
+/* Контейнер имеет фиксированную высоту viewport, контент внутри прокручивается */
+/* ВАЖНО: Сохраняем адаптивность - не переопределяем ширину */
+body.tg-webapp .main-wrapper {
+    /* Высота и прокрутка */
+    height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+    /* Padding для safe area */
+    padding-top: var(--tg-safe-area-inset-top) !important;
+    padding-bottom: var(--tg-safe-area-inset-bottom) !important;
+    padding-left: var(--tg-safe-area-inset-left) !important;
+    padding-right: var(--tg-safe-area-inset-right) !important;
+    /* Убираем transform для правильной прокрутки */
+    transform: none !important;
+    /* ВАЖНО: margin остается адаптивным (0 auto из медиа-запроса) - не переопределяем */
+    /* margin: 0 auto !important; - НЕ устанавливаем, чтобы сохранить адаптивность */
+    position: relative !important;
+    /* Убираем ограничения min/max высоты для контейнера */
+    min-height: auto !important;
+    max-height: none !important;
+    /* Убираем box-sizing issues */
+    box-sizing: border-box !important;
+    /* Сохраняем видимость */
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1 !important;
+    /* ШИРИНА НЕ ПЕРЕОПРЕДЕЛЯЕТСЯ - остается адаптивной из медиа-запросов */
+}
+
+/* Telegram WebApp: main-container имеет auto высоту - контент может быть выше viewport */
+/* ВАЖНО: Сохраняем адаптивность - не переопределяем ширину */
+body.tg-webapp .main-container {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    position: relative !important;
+    /* Убираем все ограничения */
+    box-sizing: border-box !important;
+    /* ШИРИНА НЕ ПЕРЕОПРЕДЕЛЯЕТСЯ - остается адаптивной из медиа-запросов */
 }
 

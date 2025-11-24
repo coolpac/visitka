@@ -38,6 +38,12 @@ echo -e "${GREEN}✅ Подключение установлено${NC}"
 echo -e "${YELLOW}📁 Создание директорий на сервере...${NC}"
 ssh "$SERVER" "mkdir -p $REMOTE_DIR/bots $REMOTE_DIR/logs /var/log/annaivaschenko"
 
+# Обновление версии файлов для обхода кеша
+echo -e "${YELLOW}🔄 Обновление версии файлов...${NC}"
+if [ -f "$LOCAL_DIR/update-version.sh" ]; then
+    bash "$LOCAL_DIR/update-version.sh"
+fi
+
 # Копирование файлов проекта
 echo -e "${YELLOW}📦 Копирование файлов проекта...${NC}"
 rsync -avz --exclude='.git' \
