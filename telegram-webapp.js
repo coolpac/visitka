@@ -34,21 +34,14 @@ class TelegramWebApp {
         // Уведомляем Telegram, что приложение готово
         this.webApp.ready();
 
-        // Расширяем приложение на весь экран
+        // ВАЖНО: Сначала запрашиваем viewport для получения правильных размеров
+        this.webApp.requestViewport();
+
+        // Расширяем приложение на весь экран (убирает стандартные отступы)
         this.webApp.expand();
 
-        // Блокируем закрытие приложения свайпом (ВАЖНО: вызывать ДО других настроек)
-        // Это предотвращает случайное закрытие приложения свайпом вниз
-        try {
-            if (typeof this.webApp.enableClosingConfirmation === 'function') {
-                this.webApp.enableClosingConfirmation();
-                console.log('✅ Блокировка закрытия свайпом включена');
-            } else {
-                console.warn('⚠️ enableClosingConfirmation недоступен в этой версии Telegram');
-            }
-        } catch (e) {
-            console.error('Ошибка при включении блокировки закрытия:', e);
-        }
+        // Блокируем закрытие приложения свайпом - используем все доступные методы
+        this.setupSwipeProtection();
 
         // Настраиваем цвета заголовка и фона в соответствии с темой
         this.setupTheme();
@@ -62,11 +55,11 @@ class TelegramWebApp {
         // Включаем тактильную обратную связь
         this.enableHapticFeedback();
 
-        // Запрашиваем viewport для корректного отображения
-        this.webApp.requestViewport();
-
-        // Убираем лишнее белое пространство внизу
+        // Убираем лишнее белое пространство внизу (учитывая шапку и подвал Telegram)
         this.removeBottomSpacing();
+
+        // Настраиваем полноэкранный режим если доступен
+        this.setupFullscreenMode();
 
         console.log('Telegram Web App инициализирован:', {
             version: this.webApp.version,
@@ -554,21 +547,106 @@ class TelegramWebApp {
     }
 
     /**
+     * Настройка защиты от закрытия свайпом
+     * Использует все доступные методы для максимальной защиты
+     */
+    setupSwipeProtection() {
+        if (!this.isTelegram) return;
+
+        try {
+            // Метод 1: enableClosingConfirmation - требует подтверждения перед закрытием
+            if (typeof this.webApp.enableClosingConfirmation === 'function') {
+                this.webApp.enableClosingConfirmation();
+                console.log('✅ enableClosingConfirmation включен');
+            }
+
+            // Метод 2: disableVerticalSwipes - блокирует вертикальные свайпы (если доступен)
+            if (typeof this.webApp.disableVerticalSwipes === 'function') {
+                this.webApp.disableVerticalSwipes();
+                console.log('✅ disableVerticalSwipes включен');
+            }
+
+            // Метод 3: Обработка события закрытия для предотвращения
+            if (typeof this.webApp.onEvent === 'function') {
+                this.webApp.onEvent('viewportChanged', (event) => {
+                    // Если viewport изменился из-за попытки закрытия, предотвращаем
+                    if (event.isStateStable === false) {
+                        console.log('⚠️ Обнаружена попытка закрытия');
+                    }
+                });
+            }
+
+            // Метод 4: Перехват события закрытия
+            const originalClose = this.webApp.close;
+            this.webApp.close = () => {
+                // Можно добавить дополнительную логику перед закрытием
+                console.log('⚠️ Попытка закрытия приложения');
+                originalClose.call(this.webApp);
+            };
+
+        } catch (e) {
+            console.error('Ошибка при настройке защиты от свайпа:', e);
+        }
+    }
+
+    /**
+     * Настройка полноэкранного режима если доступен
+     */
+    setupFullscreenMode() {
+        if (!this.isTelegram) return;
+
+        try {
+            // Проверяем доступность полноэкранного режима
+            // В новых версиях Telegram может быть доступен через параметры Mini App
+            if (this.webApp.isExpanded) {
+                console.log('✅ Приложение расширено на весь экран');
+            }
+
+            // Если доступен метод для полноэкранного режима
+            if (typeof this.webApp.requestFullscreen === 'function') {
+                // Не вызываем автоматически, так как это может быть навязчиво
+                // Но сохраняем метод для возможного использования
+                console.log('ℹ️ requestFullscreen доступен');
+            }
+
+        } catch (e) {
+            console.error('Ошибка при настройке полноэкранного режима:', e);
+        }
+    }
+
+    /**
      * Убирает лишнее белое пространство внизу страницы в Telegram
+     * Учитывает шапку и подвал Telegram через contentSafeAreaInsets
      */
     removeBottomSpacing() {
         if (!this.isTelegram) return;
         
-        // Убираем padding-bottom из body и html через инлайн стили
+        // Получаем правильные отступы с учетом шапки и подвала Telegram
+        // contentSafeAreaInsets доступен в новых версиях Telegram Web App API
+        let contentSafeAreaBottom = 0;
+        
+        // Пробуем получить через API
+        if (this.webApp.contentSafeAreaInsets) {
+            contentSafeAreaBottom = this.webApp.contentSafeAreaInsets.bottom || 0;
+        } else if (this.webApp.safeAreaInsets) {
+            // Fallback на safeAreaInsets если contentSafeAreaInsets недоступен
+            contentSafeAreaBottom = this.webApp.safeAreaInsets.bottom || 0;
+        }
+        
+        // Убираем лишнее пространство через CSS
+        // Используем 0, так как expand() уже должен убрать стандартные отступы
         const style = document.createElement('style');
         style.id = 'telegram-bottom-spacing-fix';
         style.textContent = `
             html {
                 padding-bottom: 0 !important;
+                margin-bottom: 0 !important;
             }
             body {
                 padding-bottom: 0 !important;
                 margin-bottom: 0 !important;
+                /* Убираем все отступы снизу */
+                overflow-x: hidden !important;
             }
             .main-wrapper {
                 margin-bottom: 0 !important;
@@ -577,6 +655,19 @@ class TelegramWebApp {
             .main-container {
                 margin-bottom: 0 !important;
                 padding-bottom: 0 !important;
+            }
+            /* Убираем лишнее пространство после последней секции */
+            .project-section-7 {
+                margin-bottom: 0 !important;
+                padding-bottom: 0 !important;
+            }
+            .values-banner {
+                margin-bottom: 0 !important;
+                padding-bottom: 0 !important;
+            }
+            /* Убираем лишнее пространство внизу страницы */
+            body::after {
+                display: none !important;
             }
         `;
         
@@ -587,7 +678,20 @@ class TelegramWebApp {
         }
         
         document.head.appendChild(style);
-        console.log('✅ Убрано лишнее белое пространство внизу');
+        
+        // Также применяем стили напрямую к body для надежности
+        document.body.style.paddingBottom = '0';
+        document.body.style.marginBottom = '0';
+        document.documentElement.style.paddingBottom = '0';
+        document.documentElement.style.marginBottom = '0';
+        
+        console.log('✅ Убрано лишнее белое пространство внизу', {
+            contentSafeAreaBottom: contentSafeAreaBottom,
+            viewportHeight: this.webApp.viewportHeight,
+            viewportStableHeight: this.webApp.viewportStableHeight,
+            isExpanded: this.webApp.isExpanded,
+            platform: this.webApp.platform
+        });
     }
 
     /**

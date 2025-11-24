@@ -1357,7 +1357,21 @@ async def cmd_analytics(message: types.Message):
             max_count = max([s['count'] for s in recent_stats], default=1)
             
             for stat in reversed(recent_stats):
-                date = datetime.fromisoformat(stat['date']).strftime("%d.%m")
+                date_str = stat['date']
+                try:
+                    # Парсим дату из SQLite формата YYYY-MM-DD
+                    if isinstance(date_str, str):
+                        if 'T' in date_str:
+                            date_obj = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+                        else:
+                            date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                    else:
+                        date_obj = datetime.fromisoformat(str(date_str))
+                    date = date_obj.strftime("%d.%m")
+                except Exception as e:
+                    logger.warning(f"Ошибка парсинга даты {date_str}: {e}")
+                    date = str(date_str)[:5]
+                
                 count = stat['count']
                 bar_length = int((count / max_count) * 20) if max_count > 0 else 0
                 bar = "█" * bar_length + "▱" * (20 - bar_length)
@@ -1385,10 +1399,14 @@ async def cmd_analytics(message: types.Message):
         if stats['total_users'] > 0:
             active_rate = (stats['active_month'] / stats['total_users']) * 100
             analytics_text += f"• Процент активных: <b>{active_rate:.1f}%</b>\n"
+        else:
+            analytics_text += "• Процент активных: <b>0%</b>\n"
         
         if stats['total_broadcasts'] > 0 and stats['total_sent'] > 0:
             avg_per_broadcast = stats['total_sent'] / stats['total_broadcasts']
             analytics_text += f"• Среднее сообщений на рассылку: <b>{avg_per_broadcast:.0f}</b>\n"
+        else:
+            analytics_text += "• Среднее сообщений на рассылку: <b>0</b>\n"
         
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="📈 График роста", callback_data="analytics_growth")],
@@ -1410,7 +1428,10 @@ async def analytics_detailed(callback: types.CallbackQuery):
         return
     
     await callback.answer()
-    await cmd_analytics(callback.message)
+    if callback.message:
+        await cmd_analytics(callback.message)
+    else:
+        await bot.send_message(callback.from_user.id, "Используйте команду /analytics")
 
 
 @dp.callback_query(F.data == "analytics_growth")
@@ -1425,7 +1446,13 @@ async def analytics_growth(callback: types.CallbackQuery):
         
         if not date_stats:
             await callback.answer("Нет данных для графика", show_alert=True)
+            if callback.message:
+                await callback.message.answer("📈 <b>График роста пользователей</b>\n\nНет данных за последние 30 дней.", parse_mode=ParseMode.HTML)
+            else:
+                await bot.send_message(callback.from_user.id, "Нет данных для графика")
             return
+        
+        await callback.answer()
         
         growth_chart = "📈 <b>График роста пользователей (30 дней):</b>\n\n"
         
@@ -1433,18 +1460,40 @@ async def analytics_growth(callback: types.CallbackQuery):
         max_count = max([s['count'] for s in date_stats], default=1)
         
         for stat in reversed(date_stats[:30]):  # Последние 30 дней
-            date = datetime.fromisoformat(stat['date']).strftime("%d.%m")
+            # SQLite возвращает дату в формате YYYY-MM-DD
+            date_str = stat['date']
+            try:
+                # Пробуем разные форматы
+                if isinstance(date_str, str):
+                    if 'T' in date_str:
+                        date_obj = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+                    else:
+                        # Формат YYYY-MM-DD
+                        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                else:
+                    date_obj = datetime.fromisoformat(str(date_str))
+                
+                date_formatted = date_obj.strftime("%d.%m")
+            except Exception as e:
+                logger.warning(f"Ошибка парсинга даты {date_str}: {e}")
+                date_formatted = str(date_str)[:5]  # Берем первые 5 символов
+            
             count = stat['count']
             bar_length = int((count / max_count) * 30) if max_count > 0 else 0
             bar = "█" * bar_length + "▱" * (30 - bar_length)
-            growth_chart += f"{date}: {bar} {count}\n"
+            growth_chart += f"{date_formatted}: {bar} {count}\n"
         
-        await callback.message.edit_text(text=growth_chart, parse_mode=ParseMode.HTML)
-        await callback.answer()
+        if callback.message:
+            try:
+                await callback.message.edit_text(text=growth_chart, parse_mode=ParseMode.HTML)
+            except:
+                await callback.message.answer(text=growth_chart, parse_mode=ParseMode.HTML)
+        else:
+            await bot.send_message(callback.from_user.id, text=growth_chart, parse_mode=ParseMode.HTML)
         
     except Exception as e:
-        logger.error(f"Ошибка при построении графика: {e}")
-        await callback.answer("❌ Ошибка", show_alert=True)
+        logger.error(f"Ошибка при построении графика: {e}", exc_info=True)
+        await callback.answer("❌ Ошибка при построении графика", show_alert=True)
 
 
 @dp.callback_query(F.data == "analytics_export")
@@ -1474,7 +1523,20 @@ async def analytics_export(callback: types.CallbackQuery):
         if date_stats:
             export_text += "📅 <b>Регистрации по датам (последние 30 дней):</b>\n"
             for stat in reversed(date_stats[:30]):
-                date = datetime.fromisoformat(stat['date']).strftime("%d.%m.%Y")
+                date_str = stat['date']
+                try:
+                    # Парсим дату из SQLite формата YYYY-MM-DD
+                    if isinstance(date_str, str):
+                        if 'T' in date_str:
+                            date_obj = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+                        else:
+                            date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                    else:
+                        date_obj = datetime.fromisoformat(str(date_str))
+                    date = date_obj.strftime("%d.%m.%Y")
+                except Exception as e:
+                    logger.warning(f"Ошибка парсинга даты {date_str}: {e}")
+                    date = str(date_str)
                 export_text += f"{date}: {stat['count']}\n"
         
         # Отправляем как файл (в виде текста, так как Telegram Bot API не поддерживает CSV напрямую)
@@ -1548,8 +1610,20 @@ async def menu_stats(callback: types.CallbackQuery):
         await callback.answer("❌ Нет доступа", show_alert=True)
         return
     
-    await callback.answer()
-    await cmd_stats(callback.message)
+    try:
+        await callback.answer()
+        # Используем callback.message.answer вместо передачи callback.message в функцию
+        if callback.message:
+            await cmd_stats(callback.message)
+        else:
+            # Если message недоступен, отправляем через бота
+            await bot.send_message(callback.from_user.id, "Используйте команду /stats")
+    except Exception as e:
+        logger.error(f"Ошибка в menu_stats: {e}", exc_info=True)
+        try:
+            await callback.answer("❌ Ошибка", show_alert=True)
+        except:
+            pass
 
 
 @dp.callback_query(F.data == "menu_broadcast")
@@ -1559,8 +1633,18 @@ async def menu_broadcast(callback: types.CallbackQuery, state: FSMContext):
         await callback.answer("❌ Нет доступа", show_alert=True)
         return
     
-    await callback.answer()
-    await cmd_broadcast(callback.message, state)
+    try:
+        await callback.answer()
+        if callback.message:
+            await cmd_broadcast(callback.message, state)
+        else:
+            await bot.send_message(callback.from_user.id, "Используйте команду /broadcast")
+    except Exception as e:
+        logger.error(f"Ошибка в menu_broadcast: {e}", exc_info=True)
+        try:
+            await callback.answer("❌ Ошибка", show_alert=True)
+        except:
+            pass
 
 
 @dp.callback_query(F.data == "menu_schedule")
@@ -1570,8 +1654,18 @@ async def menu_schedule(callback: types.CallbackQuery, state: FSMContext):
         await callback.answer("❌ Нет доступа", show_alert=True)
         return
     
-    await callback.answer()
-    await cmd_schedule(callback.message, state)
+    try:
+        await callback.answer()
+        if callback.message:
+            await cmd_schedule(callback.message, state)
+        else:
+            await bot.send_message(callback.from_user.id, "Используйте команду /schedule")
+    except Exception as e:
+        logger.error(f"Ошибка в menu_schedule: {e}", exc_info=True)
+        try:
+            await callback.answer("❌ Ошибка", show_alert=True)
+        except:
+            pass
 
 
 @dp.callback_query(F.data == "menu_templates")
@@ -1581,8 +1675,18 @@ async def menu_templates(callback: types.CallbackQuery):
         await callback.answer("❌ Нет доступа", show_alert=True)
         return
     
-    await callback.answer()
-    await cmd_templates(callback.message)
+    try:
+        await callback.answer()
+        if callback.message:
+            await cmd_templates(callback.message)
+        else:
+            await bot.send_message(callback.from_user.id, "Используйте команду /templates")
+    except Exception as e:
+        logger.error(f"Ошибка в menu_templates: {e}", exc_info=True)
+        try:
+            await callback.answer("❌ Ошибка", show_alert=True)
+        except:
+            pass
 
 
 @dp.callback_query(F.data == "menu_users")
@@ -1592,8 +1696,18 @@ async def menu_users(callback: types.CallbackQuery, state: FSMContext):
         await callback.answer("❌ Нет доступа", show_alert=True)
         return
     
-    await callback.answer()
-    await cmd_users(callback.message, state)
+    try:
+        await callback.answer()
+        if callback.message:
+            await cmd_users(callback.message, state)
+        else:
+            await bot.send_message(callback.from_user.id, "Используйте команду /users")
+    except Exception as e:
+        logger.error(f"Ошибка в menu_users: {e}", exc_info=True)
+        try:
+            await callback.answer("❌ Ошибка", show_alert=True)
+        except:
+            pass
 
 
 @dp.callback_query(F.data == "menu_history")
@@ -1603,8 +1717,18 @@ async def menu_history(callback: types.CallbackQuery):
         await callback.answer("❌ Нет доступа", show_alert=True)
         return
     
-    await callback.answer()
-    await cmd_history(callback.message)
+    try:
+        await callback.answer()
+        if callback.message:
+            await cmd_history(callback.message)
+        else:
+            await bot.send_message(callback.from_user.id, "Используйте команду /history")
+    except Exception as e:
+        logger.error(f"Ошибка в menu_history: {e}", exc_info=True)
+        try:
+            await callback.answer("❌ Ошибка", show_alert=True)
+        except:
+            pass
 
 
 @dp.callback_query(F.data == "history_detailed")
@@ -1629,7 +1753,11 @@ async def history_detailed(callback: types.CallbackQuery):
     text += f"Всего рассылок: {len(broadcasts)}\n"
     text += f"Отправлено сообщений: {total_sent}\n"
     text += f"Ошибок: {total_failed}\n"
-    text += f"Успешность: {((total_sent / (total_sent + total_failed)) * 100):.1f}%\n\n"
+    if (total_sent + total_failed) > 0:
+        success_rate = (total_sent / (total_sent + total_failed)) * 100
+        text += f"Успешность: {success_rate:.1f}%\n\n"
+    else:
+        text += "Успешность: 0%\n\n"
     
     text += "📅 <b>Последние рассылки:</b>\n\n"
     

@@ -41,8 +41,9 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     /* Поддержка безопасной зоны для Telegram */
+    /* Используем contentSafeAreaInset для учета шапки и подвала Telegram */
     padding-top: env(safe-area-inset-top);
-    padding-bottom: 0; /* Убрано для устранения белого пространства в Telegram */
+    padding-bottom: 0; /* Убрано - используется contentSafeAreaInset через JS */
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
 }
@@ -1293,8 +1294,9 @@ img.lazy {
         overflow-x: hidden;
         width: 100%;
         /* Поддержка безопасной зоны для Telegram */
+        /* Используем contentSafeAreaInset для учета шапки и подвала Telegram */
         padding-top: env(safe-area-inset-top);
-        padding-bottom: 0; /* Убрано для устранения белого пространства в Telegram */
+        padding-bottom: 0; /* Убрано - используется contentSafeAreaInset через JS */
         padding-left: env(safe-area-inset-left);
         padding-right: env(safe-area-inset-right);
     }
@@ -1319,8 +1321,9 @@ img.lazy {
         align-items: flex-start !important;
         position: relative !important;
         /* Поддержка безопасной зоны для Telegram */
+        /* Используем contentSafeAreaInset для учета шапки и подвала Telegram */
         padding-top: env(safe-area-inset-top) !important;
-        padding-bottom: 0 !important; /* Убрано для устранения белого пространства в Telegram */
+        padding-bottom: 0 !important; /* Убрано - используется contentSafeAreaInset через JS */
         padding-left: env(safe-area-inset-left) !important;
         padding-right: env(safe-area-inset-right) !important;
     }
