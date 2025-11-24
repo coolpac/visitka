@@ -1,0 +1,8 @@
+# Telegram Bot Dependencies
+aiogram==3.11.0
+python-dotenv==1.0.0
+
+# Database
+# SQLite встроен в Python, дополнительные библиотеки не требуются
+
+

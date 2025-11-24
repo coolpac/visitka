@@ -71,13 +71,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Contact button functionality
+    // Contact button functionality with Telegram integration
     const contactButtons = document.querySelectorAll('.contact-button, .values-contact-button');
     
     contactButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const email = 'anna.anna.ivaschenko@gmail.com';
-            window.location.href = `mailto:${email}?subject=Контакт с сайта-визитки`;
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Используем Telegram Web App для обработки контакта
+            if (typeof telegramWebApp !== 'undefined' && telegramWebApp.isInTelegram()) {
+                telegramWebApp.handleContactClick();
+            } else {
+                // Fallback для обычного браузера
+                const email = 'anna.anna.ivaschenko@gmail.com';
+                window.location.href = `mailto:${email}?subject=Контакт с сайта-визитки`;
+            }
         });
     });
 
@@ -179,6 +186,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
+            // Тактильная обратная связь при взаимодействии
+            if (typeof telegramWebApp !== 'undefined') {
+                telegramWebApp.hapticFeedback('impact', 'light');
+            }
             showNextSlide();
             startSlider();
         });
@@ -186,8 +197,85 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
+            // Тактильная обратная связь при взаимодействии
+            if (typeof telegramWebApp !== 'undefined') {
+                telegramWebApp.hapticFeedback('impact', 'light');
+            }
             showPrevSlide();
             startSlider();
+        });
+    }
+
+    // Интеграция Telegram для социальных ссылок
+    const socialLinks = document.querySelectorAll('.telegram-icon, .vk-icon');
+    socialLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href && typeof telegramWebApp !== 'undefined' && telegramWebApp.isInTelegram()) {
+                e.preventDefault();
+                // Открываем ссылки через Telegram для лучшей интеграции
+                if (href.includes('t.me')) {
+                    telegramWebApp.openTelegramLink(href);
+                } else {
+                    telegramWebApp.openLink(href);
+                }
+                telegramWebApp.hapticFeedback('impact', 'light');
+            }
+        });
+    });
+
+    // Интеграция Telegram для ссылок в футере
+    const footerLinks = document.querySelectorAll('.values-footer-link');
+    footerLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href && typeof telegramWebApp !== 'undefined' && telegramWebApp.isInTelegram()) {
+                e.preventDefault();
+                if (href.includes('t.me')) {
+                    telegramWebApp.openTelegramLink(href);
+                } else {
+                    telegramWebApp.openLink(href);
+                }
+                telegramWebApp.hapticFeedback('impact', 'light');
+            }
+        });
+    });
+
+    // Добавляем тактильную обратную связь при взаимодействии с интерактивными элементами
+    const interactiveElements = document.querySelectorAll('button, a, .speaker-slide, .hero-slide');
+    interactiveElements.forEach(element => {
+        element.addEventListener('touchstart', function() {
+            if (typeof telegramWebApp !== 'undefined') {
+                telegramWebApp.hapticFeedback('selection');
+            }
+        }, { passive: true });
+    });
+
+    // Сохранение состояния прокрутки в CloudStorage (если доступно)
+    if (typeof telegramWebApp !== 'undefined' && telegramWebApp.isInTelegram()) {
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+                telegramWebApp.saveToCloudStorage('scrollPosition', scrollPosition.toString(), (success) => {
+                    if (success) {
+                        console.log('Позиция прокрутки сохранена');
+                    }
+                });
+            }, 500);
+        }, { passive: true });
+
+        // Восстановление позиции прокрутки при загрузке
+        telegramWebApp.getFromCloudStorage('scrollPosition', (value) => {
+            if (value) {
+                const scrollPosition = parseInt(value, 10);
+                if (scrollPosition > 0) {
+                    setTimeout(() => {
+                        window.scrollTo(0, scrollPosition);
+                    }, 100);
+                }
+            }
         });
     }
 });

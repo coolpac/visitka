@@ -1,0 +1,24 @@
+[Unit]
+Description=Telegram User Bot для annaivaschenko.ru
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/annaivaschenko.ru/bots
+Environment="PATH=/var/www/annaivaschenko.ru/bots/venv/bin"
+ExecStart=/var/www/annaivaschenko.ru/bots/venv/bin/python3 /var/www/annaivaschenko.ru/bots/user_bot.py
+Restart=always
+RestartSec=10
+StandardOutput=append:/var/log/annaivaschenko/user-bot.log
+StandardError=append:/var/log/annaivaschenko/user-bot.error.log
+
+# Ограничения ресурсов
+LimitNOFILE=65536
+MemoryLimit=256M
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target
+
